@@ -168,6 +168,19 @@ print('Total loss:          ', total_loss)
 
 encoded_mean, encoded_log_var, encoded_z = encoder(train_tensor)
 
+# Save latent vectors
+latent_vectors = encoded_mean.numpy()  # Shape: (num_samples, latent_dim, latent_filter)
+flat_latents = latent_vectors.reshape(latent_vectors.shape[0], -1)  # Flatten for saving
+
+# Save as CSV
+latent_df = pd.DataFrame(flat_latents)
+latent_df.index = data.index[:len(latent_df)]  # Optional: align with input time series
+latent_df.to_csv("data/latent_vectors.csv")
+
+# Save as .npy for quick load
+np.save("data/latent_vectors.npy", latent_vectors)
+
+
 # set figure size
 plt.figure(figsize=(15, 5))
 # boxplot of encoded_mean
