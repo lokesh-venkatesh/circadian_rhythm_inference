@@ -141,7 +141,7 @@ optimizer = Adam(learning_rate=learning_rate)
 
 vae.compile(optimizer=optimizer)
 
-epochs = 500
+epochs = 1000
 
 batch_size = 32
 
