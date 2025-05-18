@@ -24,8 +24,6 @@ def build_encoder():
     encoder.summary()
     return encoder
 
-encoder = build_encoder()
-
 # Build the decoder
 def build_decoder():
     latent_inputs = layers.Input(shape=(latent_dim, latent_filter))
@@ -40,8 +38,6 @@ def build_decoder():
     decoder.summary()
     return decoder
 
-decoder = build_decoder()
-
 def build_seasonal_prior():
     seasonal_inputs = layers.Input(shape=(latent_dim, 2*DEGREE,))
     x = layers.Dense(2*latent_filter, use_bias=False)(seasonal_inputs)
@@ -51,9 +47,6 @@ def build_seasonal_prior():
     seasonal_prior = models.Model(seasonal_inputs, [z_mean, z_log_var, z], name='seasonal_prior')
     seasonal_prior.summary()
     return seasonal_prior
-
-seasonal_prior = build_seasonal_prior()
-
 
 class VAE(models.Model):
     def __init__(self, encoder, decoder, prior, **kwargs):

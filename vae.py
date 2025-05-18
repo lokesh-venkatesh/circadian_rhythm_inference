@@ -30,6 +30,10 @@ test_tensor = tf.convert_to_tensor(test, dtype=tf.float32)
 train_seasonal_tensor = tf.convert_to_tensor(train_seasonal, dtype=tf.float32)
 test_seasonal_tensor = tf.convert_to_tensor(test_seasonal, dtype=tf.float32)
 
+encoder = build_encoder()
+decoder = build_decoder()
+seasonal_prior = build_seasonal_prior()
+
 vae = VAE(encoder=encoder, decoder=decoder, prior=seasonal_prior)
 optimizer = Adam(learning_rate=learning_rate)
 vae.compile(optimizer=optimizer)
@@ -63,10 +67,10 @@ flat_latents = latent_vectors.reshape(latent_vectors.shape[0], -1)  # Flatten fo
 # Save as CSV
 latent_df = pd.DataFrame(flat_latents)
 latent_df.index = data.index[:len(latent_df)]  # Optional: align with input time series
-latent_df.to_csv("data/latent_vectors.csv")
+latent_df.to_csv("data/processed/latent_vectors.csv")
 
 # Save as .npy for quick load
-np.save("data/latent_vectors.npy", latent_vectors)
+np.save("data/processed/latent_vectors.npy", latent_vectors)
 
 # set figure size
 plt.figure(figsize=(15, 5))

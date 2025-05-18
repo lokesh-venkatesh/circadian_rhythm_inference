@@ -53,6 +53,38 @@ scale = round(df_mst['Climate Adjusted'].std(), 2)
 print('scale:  ', scale)
 dft = (df_mst['Climate Adjusted'] - offset) / scale
 
+values = dft.values.squeeze()  # (T,) shape if single column
+timestamps = dft.index
+
+# Parameters
+window_size = 64 * 24  # 64 days
+hop_size = 8 * 24     # 8 days
+total_hours = len(values)
+
+# Generate overlapping windows
+X = []
+index = []
+
+for start in range(0, total_hours - window_size + 1, hop_size):
+    end = start + window_size
+    X.append(values[start:end])
+    index.append(timestamps[start])  # Save the timestamp of the first hour of the chunk
+
+X = np.array(X)  # Shape: (num_chunks, 1536)
+index = pd.to_datetime(index)
+
+# Create DataFrame with timestamp index
+dft_reshaped = pd.DataFrame(data=X, index=index)
+
+# Shuffle rows reproducibly
+np.random.seed(42)
+dft_reshaped = dft_reshaped.sample(frac=1)
+
+# Save to CSV
+dft_reshaped.to_csv('data/processed/phoenix_64days.csv')
+
+
+'''
 # reshape dataframe to have 64*24 columns
 
 k = 64*24
@@ -67,3 +99,4 @@ np.random.seed(42)
 # shuffle rows
 dft_reshaped = dft_reshaped.sample(frac=1)
 dft_reshaped.to_csv('data/processed/phoenix_64days.csv')
+'''
