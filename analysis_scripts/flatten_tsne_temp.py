@@ -38,7 +38,7 @@ sns.set_theme(style="whitegrid")
 fig = plt.figure(figsize=(10, 8))
 ax = fig.add_subplot(111, projection='3d')
 sc = ax.scatter(latent_3d_tsne[:, 0], latent_3d_tsne[:, 1], latent_3d_tsne[:, 2],
-                c=mean_temps, cmap='viridis', s=12, alpha=0.8)
+                c=mean_temps, cmap='coolwarm', s=12, alpha=0.8)
 plt.colorbar(sc, ax=ax, label='Mean Temperature')
 ax.set_title("t-SNE - Latent Space (3D)", fontsize=14)
 ax.set_xlabel("t-SNE 1")
@@ -55,7 +55,7 @@ fig_tsne_plotly = px.scatter_3d(
     title="t-SNE - Latent Space (3D, Interactive)",
     labels={"x": "t-SNE 1", "y": "t-SNE 2", "z": "t-SNE 3", "color": "Mean Temp"},
     opacity=0.7,
-    color_continuous_scale='Viridis'
+    color_continuous_scale='RdBu_r'
 )
 fig_tsne_plotly.write_html("images/latent_space_tsne_3d_interactive.html")
 
@@ -68,7 +68,7 @@ pairs = [(0, 1), (0, 2), (1, 2)]
 for (i, j), (xlabel, ylabel) in zip(pairs, pair_labels):
     plt.figure(figsize=(8, 6))
     sc = plt.scatter(latent_3d_tsne[:, i], latent_3d_tsne[:, j],
-                     c=mean_temps, cmap='viridis', s=12, alpha=0.8)
+                     c=mean_temps, cmap='coolwarm', s=12, alpha=0.8)
     plt.colorbar(sc, label='Mean Temperature')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
