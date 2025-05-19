@@ -39,7 +39,7 @@ def build_decoder():
     return decoder
 
 def build_seasonal_prior():
-    seasonal_inputs = layers.Input(shape=(latent_dim, 2*DEGREE,))
+    seasonal_inputs = layers.Input(shape=(None, 2*DEGREE,))
     x = layers.Dense(2*latent_filter, use_bias=False)(seasonal_inputs)
     z_mean = x[:, :, :latent_filter]
     z_log_var = x[:, :, latent_filter:]
