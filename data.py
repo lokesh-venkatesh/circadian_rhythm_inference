@@ -3,9 +3,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-
+import os
 from utils import set_seed
 from config import INPUT_SIZE
+
+os.makedirs('data/processed', exist_ok=True)
+os.makedirs('images', exist_ok=True)
 
 set_seed()
 df_list = []

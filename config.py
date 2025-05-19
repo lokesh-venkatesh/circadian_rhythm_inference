@@ -15,7 +15,7 @@ interim_filters = 2*latent_filter
 
 # training hyperparameters
 learning_rate = 0.001
-epochs = 100
+epochs = 200
 batch_size = 32
 
 if __name__=="__main__":

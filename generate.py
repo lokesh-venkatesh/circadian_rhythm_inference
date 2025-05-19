@@ -4,11 +4,13 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
+import os
 
 from model import build_encoder, build_decoder, build_seasonal_prior, VAE
 from utils import set_seed
 from config import *
 
+os.makedirs('data/processed', exist_ok=True)
 set_seed()
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
@@ -69,10 +71,10 @@ plt.title('Encoded Log Variance')
 plt.savefig("images/encoded_log_variance.png", dpi=300)
 
 start_date = '1970-01-01 00:00:00'
-end_date = '2020-12-31 17:00:00'
+end_date = '2020-12-31 16:00:00'
 dt = pd.date_range(start=start_date, end=end_date, freq='h')
 
-gen_seasonal_inputs = fourier((dt.dayofyear[::LATENT_SIZE]-1)/365)[np.newaxis]
+gen_seasonal_inputs = fourier((dt.dayofyear[::LATENT_SIZE])/365)[np.newaxis]
 
 _, _, z_gen = seasonal_prior(gen_seasonal_inputs)
 
