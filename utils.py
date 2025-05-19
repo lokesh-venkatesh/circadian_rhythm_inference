@@ -37,3 +37,7 @@ def log_lik_normal_sum(x, mu=0.0, log_var = 0.0):
     axis0 = -0.5*(tf.math.log(2*np.pi) + tf.reduce_mean(log_var + (x - mu) ** 2 * tf.exp(-log_var), axis=0))
     return tf.reduce_sum(axis0)
 
+def set_seed(SEED=42):
+    """Set the random seed for reproducibility."""
+    np.random.seed(SEED)
+    tf.random.set_seed(SEED)
