@@ -4,7 +4,6 @@ import sys
 import argparse
 
 if __name__=="__main__":
-
     scripts = ["analysis_scripts/flatten_pca_day_of_year.py", 
                "analysis_scripts/flatten_pca_temp.py", 
                "analysis_scripts/flatten_pca_plain.py", 

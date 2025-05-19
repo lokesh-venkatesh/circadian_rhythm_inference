@@ -34,7 +34,6 @@ epochs = args.epochs
 batch_size = 32
 
 if __name__=="__main__":
-
     scripts = ["data.py", "train.py", "generate.py", "plots.py", "latent.py"]
     for script in scripts:
         print(f"\n--- Running {script} ---")

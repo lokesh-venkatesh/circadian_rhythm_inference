@@ -10,6 +10,7 @@ from model import build_encoder, build_decoder, build_seasonal_prior, VAE
 from utils import set_seed
 from config import *
 
+
 os.makedirs('data/processed', exist_ok=True)
 set_seed()
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)

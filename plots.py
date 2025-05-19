@@ -15,7 +15,6 @@ if 'Climate Adjusted' in raw_data.columns:
 
 if isinstance(raw_data, pd.DataFrame): raw_data = raw_data.squeeze()
 if isinstance(gen_data, pd.DataFrame): gen_data = gen_data.squeeze()
-#gen_data = gen_data.iloc[0:]
 
 print(raw_data.head())
 print(gen_data.head())

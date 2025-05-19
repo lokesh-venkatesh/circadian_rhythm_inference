@@ -32,8 +32,7 @@ seasonal_data = fourier(data_days/365)
 gen_dataset = data.values
 gen_dataset_seasonal = seasonal_data
 
-# convert to tensors
-gen_dataset_tensor = tf.convert_to_tensor(gen_dataset, dtype=tf.float32)
+gen_dataset_tensor = tf.convert_to_tensor(gen_dataset, dtype=tf.float32) # convert to tensors
 gen_dataset_seasonal_tensor = tf.convert_to_tensor(gen_dataset_seasonal, dtype=tf.float32)
 #------------------------------------------------------------------------------
 
