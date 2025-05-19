@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 from utils import set_seed
-from config import *
+from config import INPUT_SIZE
 
+set_seed()
 df_list = []
 for year in range(1970, 2021, 3):
     ds = xr.open_dataset(f'data/raw/phoenix/t2m_{year}_{year+2}/data_stream-oper_stepType-instant.nc')
@@ -29,7 +30,7 @@ df_yearly = df_mst.resample('YS').mean()
 slope = np.polyfit(df_yearly.index.year, df_yearly['Observed'], 1)[0]
 
 # Add climate adjusted data to dataframe
-df_mst['Climate Adjusted'] = df_mst['Observed'] - slope*(df_mst.index.year-2024)
+df_mst['Climate Adjusted'] = df_mst['Observed'] - slope*(df_mst.index.year-2020)
 
 df_yearly = df_mst.resample('YS').mean()
 df_yearly.plot()
@@ -48,9 +49,9 @@ plt.close()
 
 df_mst.to_csv('data/processed/observed_time_series.csv')
 
-offset = round(df_mst['Climate Adjusted'].mean(), 6)
+offset = round(df_mst['Climate Adjusted'].mean(), 8)
 print('offset: ', offset)
-scale = round(df_mst['Climate Adjusted'].std(), 6)
+scale = round(df_mst['Climate Adjusted'].std(), 8)
 print('scale:  ', scale)
 dft = (df_mst['Climate Adjusted']-offset)/scale
 
@@ -81,7 +82,6 @@ index = pd.to_datetime(index)
 dft_reshaped = pd.DataFrame(data=X, index=index)
 
 # Shuffle rows reproducibly
-set_seed()
 dft_reshaped = dft_reshaped.sample(frac=1)
 
 # Save to CSV

@@ -6,6 +6,9 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from mpl_toolkits.mplot3d import Axes3D
 import plotly.express as px
+import os
+
+os.makedirs('images', exist_ok=True)
 
 # Load data
 latent_vectors = np.load("data/processed/latent_vectors.npy")
@@ -14,10 +17,6 @@ data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates
 print(f"Length of the latent vectors dataset: {latent_vectors.shape[0]}")
 print(f"Length of the time-series vectors dataset: {data.shape[0]}")
 
-
-# '''
-#REMOVE THE BELOW CODE LATER???
-
 # Align number of latent vectors and temperature data
 if latent_vectors.shape[0] != data.shape[0]:
     print(f"Mismatch: {latent_vectors.shape[0]} latent vectors vs {data.shape[0]} rows in CSV. Trimming data.")
@@ -25,12 +24,6 @@ if latent_vectors.shape[0] != data.shape[0]:
 
 # Label for color-coding
 mean_temps = data.mean(axis=1)
-
-#REMOVE THE ABOVE CODE LATER???
-# '''
-
-mean_temps = data.mean(axis=1)  # Label for color-coding
-
 # Flatten latent vectors
 flat_latents = latent_vectors.reshape(latent_vectors.shape[0], -1)
 
@@ -41,7 +34,7 @@ pca = PCA(n_components=3)
 latent_3d_pca = pca.fit_transform(flat_latents)
 
 # Static matplotlib PCA plot
-sns.set(style="whitegrid")
+sns.set_theme(style="whitegrid")
 fig = plt.figure(figsize=(10, 8))
 ax = fig.add_subplot(111, projection='3d')
 sc = ax.scatter(latent_3d_pca[:, 0], latent_3d_pca[:, 1], latent_3d_pca[:, 2],

@@ -10,6 +10,7 @@ from model import *
 from utils import *
 from config import *
 
+set_seed()
 os.makedirs('model', exist_ok=True)
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
@@ -18,7 +19,7 @@ fourier = lambda x: np.stack(
     [np.cos(2*np.pi*i*x) for i in range(1, DEGREE+1)], axis=-1)
 
 starting_day = np.array(data.index.dayofyear)[:, np.newaxis] - 1
-data_days = (starting_day + np.arange(0, INPUT_SIZE//24, LATENT_SIZE//24)) % 365
+data_days = (starting_day + np.arange(0, INPUT_SIZE//24, LATENT_SIZE//24))%365
 seasonal_data = fourier(data_days/365)
 
 training_ratio = 0.8
@@ -62,6 +63,14 @@ recon_loss, kl_loss = vae.vae_loss((test_tensor, test_seasonal_tensor))
 recon_loss = recon_loss.numpy()
 kl_loss = kl_loss.numpy()
 total_loss = recon_loss + kl_loss
+
+# Save loss information as a dataframe
+summary_df = pd.DataFrame({
+    'Reconstruction loss': [recon_loss],
+    'KL loss': [kl_loss],
+    'Total loss': [total_loss]
+})
+summary_df.to_csv('data/train_summary.csv', index=False)
 
 print('Reconstruction loss: ', recon_loss)
 print('KL loss:             ', kl_loss)

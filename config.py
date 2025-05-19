@@ -1,4 +1,6 @@
 import subprocess
+import os
+import sys
 
 # define constants
 INPUT_SIZE = 64*24 # dimensions of the input data
@@ -13,12 +15,16 @@ interim_filters = 2*latent_filter
 
 # training hyperparameters
 learning_rate = 0.001
-epochs = 10
+epochs = 100
 batch_size = 32
 
 if __name__=="__main__":
+
     scripts = ["data.py", "train.py", "generate.py", "plots.py", "latent.py"]
     for script in scripts:
         print(f"\n--- Running {script} ---")
-        subprocess.run(["python", script])
+        # Suppress Python warnings and set environment variable to ignore warnings in subprocess
+        env = os.environ.copy()
+        env["PYTHONWARNINGS"] = "ignore"
+        subprocess.run([sys.executable, script], env=env)
         print(f"--- Finished {script} ---")

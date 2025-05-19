@@ -5,10 +5,11 @@ import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
-from model import *
-from utils import *
+from model import build_encoder, build_decoder, build_seasonal_prior, VAE
+from utils import set_seed
 from config import *
 
+set_seed()
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
 fourier = lambda x: np.stack(
@@ -24,22 +25,22 @@ vae = VAE(encoder=encoder, decoder=decoder, prior=seasonal_prior)
 vae.compile()
 
 starting_day = np.array(data.index.dayofyear)[:, np.newaxis] - 1
-data_days = (starting_day + np.arange(0, INPUT_SIZE//24, LATENT_SIZE//24)) % 365
+data_days = (starting_day + np.arange(0, INPUT_SIZE//24, LATENT_SIZE//24))%365
 seasonal_data = fourier(data_days/365)
 
-train = data.values
-train_seasonal = seasonal_data
+gen_dataset = data.values
+gen_dataset_seasonal = seasonal_data
+
+# convert to tensors
+gen_dataset_tensor = tf.convert_to_tensor(gen_dataset, dtype=tf.float32)
+gen_dataset_seasonal_tensor = tf.convert_to_tensor(gen_dataset_seasonal, dtype=tf.float32)
 
 # Call the model once to build it
-dummy_input = tf.zeros((1, train.shape[1]), dtype=tf.float32)  # shape (1, 1536)
+dummy_input = tf.zeros((1, gen_dataset.shape[1]), dtype=tf.float32)  # shape (1, 1536)
 _ = vae(dummy_input)
 vae.load_weights('model/model_weights.weights.h5')
 
-# convert to tensors
-train_tensor = tf.convert_to_tensor(train, dtype=tf.float32)
-train_seasonal_tensor = tf.convert_to_tensor(train_seasonal, dtype=tf.float32)
-
-encoded_mean, encoded_log_var, encoded_z = encoder(train_tensor)
+encoded_mean, encoded_log_var, encoded_z = encoder(gen_dataset_tensor)
 
 # Save latent vectors
 latent_vectors = encoded_mean.numpy()  # Shape: (num_samples, latent_dim, latent_filter)
@@ -89,3 +90,5 @@ gen_series = gen_series.to_frame()
 gen_series.index.name = 'time'
 
 gen_series.to_csv('data/processed/generated.csv')
+
+print(f"Succesfully generated time series of length: {len(gen_series.iloc[:,0])}")
