@@ -42,7 +42,7 @@ ax.set_xlabel("PC 1")
 ax.set_ylabel("PC 2")
 ax.set_zlabel("PC 3")
 plt.tight_layout()
-plt.savefig("images/latent_space_pca_3d_DOY.png", dpi=300)
+plt.savefig("images/latent_space_pca_3d_plain.png", dpi=300)
 plt.close()
 
 # Interactive plotly PCA (3D)
@@ -54,7 +54,7 @@ fig_pca_plotly = px.scatter_3d(
     opacity=0.7
 )
 fig_pca_plotly.update_traces(marker=dict(size=4))
-fig_pca_plotly.write_html("images/latent_space_pca_3d_interactive_DOY.html")
+fig_pca_plotly.write_html("images/latent_space_pca_3d_interactive_plain.html")
 
 # ---------------------------------------
 # PCA - 2D Pairwise Plots
@@ -70,5 +70,5 @@ for (i, j), (xlabel, ylabel) in zip(pairs, pair_labels):
     plt.ylabel(ylabel)
     plt.title(f"PCA - Latent Space ({xlabel} vs {ylabel})")
     plt.tight_layout()
-    plt.savefig(f"images/latent_space_pca_{i+1}_{j+1}_DOY.png", dpi=300)
+    plt.savefig(f"images/latent_space_pca_{i+1}_{j+1}_plain.png", dpi=300)
     plt.close()

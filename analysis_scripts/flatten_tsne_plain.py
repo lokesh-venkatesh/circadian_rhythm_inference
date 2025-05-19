@@ -46,7 +46,7 @@ ax.set_xlabel("t-SNE 1")
 ax.set_ylabel("t-SNE 2")
 ax.set_zlabel("t-SNE 3")
 plt.tight_layout()
-plt.savefig("images/latent_space_tsne_3d_DOY.png", dpi=300)
+plt.savefig("images/latent_space_tsne_3d_plain.png", dpi=300)
 plt.close()
 
 # Interactive plotly t-SNE (3D)
@@ -58,7 +58,7 @@ fig_tsne_plotly = px.scatter_3d(
     opacity=0.7
 )
 fig_tsne_plotly.update_traces(marker=dict(size=4, opacity=0.7))
-fig_tsne_plotly.write_html("images/latent_space_tsne_3d_interactive_DOY.html")
+fig_tsne_plotly.write_html("images/latent_space_tsne_3d_interactive_plain.html")
 
 # ---------------------------------------
 # t-SNE - 2D Pairwise Plots
@@ -75,5 +75,5 @@ for (i, j), (xlabel, ylabel) in zip(pairs, pair_labels):
     plt.ylabel(ylabel)
     plt.title(f"t-SNE - Latent Space ({xlabel} vs {ylabel})")
     plt.tight_layout()
-    plt.savefig(f"images/latent_space_tsne_{i+1}_{j+1}_DOY.png", dpi=300)
+    plt.savefig(f"images/latent_space_tsne_{i+1}_{j+1}_plain.png", dpi=300)
     plt.close()
