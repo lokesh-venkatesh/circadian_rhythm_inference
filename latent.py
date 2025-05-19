@@ -1,77 +1,57 @@
-import numpy as np
 import pandas as pd
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-from mpl_toolkits.mplot3d import Axes3D
-import plotly.express as px
 import os
 
-os.makedirs('images', exist_ok=True)
+from model import build_encoder, build_decoder, build_seasonal_prior, VAE
+from utils import set_seed
+from config import *
 
-# Load data
-latent_vectors = np.load("data/processed/latent_vectors.npy")
+set_seed()
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
-print(f"Length of the latent vectors dataset: {latent_vectors.shape[0]}")
-print(f"Length of the time-series vectors dataset: {data.shape[0]}")
+fourier = lambda x: np.stack(
+    [np.sin(2*np.pi*i*x) for i in range(1, DEGREE+1)] + 
+    [np.cos(2*np.pi*i*x) for i in range(1, DEGREE+1)], axis=-1)
 
-# Align number of latent vectors and temperature data
-if latent_vectors.shape[0] != data.shape[0]:
-    print(f"Mismatch: {latent_vectors.shape[0]} latent vectors vs {data.shape[0]} rows in CSV. Trimming data.")
-    data = data.iloc[:latent_vectors.shape[0]]
+# To demonstrate loading, create a new instance and load weights
+encoder = build_encoder()
+decoder = build_decoder()
+seasonal_prior = build_seasonal_prior()
+vae = VAE(encoder=encoder, decoder=decoder, prior=seasonal_prior)
+# optimizer = Adam(learning_rate=learning_rate)
+vae.compile()
 
-# Label for color-coding
-mean_temps = data.mean(axis=1)
-# Flatten latent vectors
-flat_latents = latent_vectors.reshape(latent_vectors.shape[0], -1)
+starting_day = np.array(data.index.dayofyear)[:, np.newaxis] - 1
+data_days = (starting_day + np.arange(0, INPUT_SIZE//24, LATENT_SIZE//24))%365
+seasonal_data = fourier(data_days/365)
 
-# ---------------------------------------
-# PCA - 3D
-# ---------------------------------------
-pca = PCA(n_components=3)
-latent_3d_pca = pca.fit_transform(flat_latents)
+#------------------------------------------------------------------------------
+gen_dataset = data.values
+gen_dataset_seasonal = seasonal_data
 
-# Static matplotlib PCA plot
-sns.set_theme(style="whitegrid")
-fig = plt.figure(figsize=(10, 8))
-ax = fig.add_subplot(111, projection='3d')
-sc = ax.scatter(latent_3d_pca[:, 0], latent_3d_pca[:, 1], latent_3d_pca[:, 2],
-                c=mean_temps, cmap='viridis', s=12, alpha=0.8)
-plt.colorbar(sc, ax=ax, label='Mean Temperature')
-ax.set_title("PCA - Latent Space (3D)", fontsize=14)
-ax.set_xlabel("PC 1")
-ax.set_ylabel("PC 2")
-ax.set_zlabel("PC 3")
-plt.tight_layout()
-plt.savefig("images/latent_space_pca_3d.png", dpi=300)
-plt.close()
+# convert to tensors
+gen_dataset_tensor = tf.convert_to_tensor(gen_dataset, dtype=tf.float32)
+gen_dataset_seasonal_tensor = tf.convert_to_tensor(gen_dataset_seasonal, dtype=tf.float32)
+#------------------------------------------------------------------------------
 
-# Interactive plotly PCA
-fig_pca_plotly = px.scatter_3d(
-    x=latent_3d_pca[:, 0], y=latent_3d_pca[:, 1], z=latent_3d_pca[:, 2],
-    color=mean_temps,
-    title="PCA - Latent Space (3D, Interactive)",
-    labels={"x": "PC 1", "y": "PC 2", "z": "PC 3", "color": "Mean Temp"},
-    opacity=0.7,
-    color_continuous_scale='Viridis'
-)
-fig_pca_plotly.write_html("images/latent_space_pca_3d_interactive.html")
+# Call the model once to build it
+dummy_input = tf.zeros((1, gen_dataset.shape[1]), dtype=tf.float32)  # shape (1, 1536)
+_ = vae(dummy_input)
+vae.load_weights('model/model_weights.weights.h5')
 
-# ---------------------------------------
-# t-SNE - 2D
-# ---------------------------------------
-tsne_2d = TSNE(n_components=2, perplexity=30, learning_rate=200, random_state=42)
-latent_2d_tsne = tsne_2d.fit_transform(flat_latents)
+encoded_mean, encoded_log_var, encoded_z = encoder(gen_dataset_tensor)
 
-plt.figure(figsize=(10, 8))
-sc = plt.scatter(latent_2d_tsne[:, 0], latent_2d_tsne[:, 1],
-                 c=mean_temps, cmap='plasma', s=12, alpha=0.8)
-plt.colorbar(sc, label='Mean Temperature')
-plt.title("t-SNE - Latent Space (2D)", fontsize=14)
-plt.xlabel("t-SNE 1")
-plt.ylabel("t-SNE 2")
-plt.tight_layout()
-plt.savefig("images/latent_space_tsne_2d.png", dpi=300)
-plt.close()
+# Save latent vectors
+latent_vectors = encoded_mean.numpy()  # Shape: (num_samples, latent_dim, latent_filter)
+flat_latents = latent_vectors.reshape(latent_vectors.shape[0], -1)  # Flatten for saving
+
+# Save as CSV
+latent_df = pd.DataFrame(flat_latents)
+latent_df.index = data.index[:len(latent_df)]  # Optional: align with input time series
+latent_df.to_csv("data/processed/latent_vectors.csv")
+
+# Save as .npy for quick load
+np.save("data/processed/latent_vectors.npy", latent_vectors)
