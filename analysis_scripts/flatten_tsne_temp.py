@@ -33,21 +33,6 @@ print("Running t-SNE (3D)... This may take a while.")
 tsne_3d = TSNE(n_components=3, random_state=42, init='pca', learning_rate='auto')
 latent_3d_tsne = tsne_3d.fit_transform(flat_latents)
 
-# Static matplotlib t-SNE plot (3D)
-sns.set_theme(style="whitegrid")
-fig = plt.figure(figsize=(10, 8))
-ax = fig.add_subplot(111, projection='3d')
-sc = ax.scatter(latent_3d_tsne[:, 0], latent_3d_tsne[:, 1], latent_3d_tsne[:, 2],
-                c=mean_temps, cmap='coolwarm', s=12, alpha=0.8)
-plt.colorbar(sc, ax=ax, label='Mean Temperature')
-ax.set_title("t-SNE - Latent Space (3D)", fontsize=14)
-ax.set_xlabel("t-SNE 1")
-ax.set_ylabel("t-SNE 2")
-ax.set_zlabel("t-SNE 3")
-plt.tight_layout()
-plt.savefig("images/latent_space_tsne_3d.png", dpi=300)
-plt.close()
-
 # Interactive plotly t-SNE (3D)
 fig_tsne_plotly = px.scatter_3d(
     x=latent_3d_tsne[:, 0], y=latent_3d_tsne[:, 1], z=latent_3d_tsne[:, 2],
@@ -62,8 +47,11 @@ fig_tsne_plotly.write_html("images/latent_space_tsne_3d_interactive.html")
 # ---------------------------------------
 # t-SNE - 2D Pairwise Plots
 # ---------------------------------------
-pair_labels = [("t-SNE 1", "t-SNE 2"), ("t-SNE 1", "t-SNE 3"), ("t-SNE 2", "t-SNE 3")]
-pairs = [(0, 1), (0, 2), (1, 2)]
+#pair_labels = [("t-SNE 1", "t-SNE 2"), ("t-SNE 1", "t-SNE 3"), ("t-SNE 2", "t-SNE 3")]
+#pairs = [(0, 1), (0, 2), (1, 2)]
+
+pair_labels = [("t-SNE 1", "t-SNE 2")]
+pairs = [(0, 1)]
 
 for (i, j), (xlabel, ylabel) in zip(pairs, pair_labels):
     plt.figure(figsize=(8, 6))

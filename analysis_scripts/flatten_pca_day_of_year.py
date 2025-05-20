@@ -34,21 +34,6 @@ flat_latents = latent_vectors.reshape(latent_vectors.shape[0], -1) # Flatten lat
 pca = PCA(n_components=3)
 latent_3d_pca = pca.fit_transform(flat_latents)
 
-# Static matplotlib PCA plot (3D)
-sns.set_theme(style="whitegrid")
-fig = plt.figure(figsize=(10, 8))
-ax = fig.add_subplot(111, projection='3d')
-sc = ax.scatter(latent_3d_pca[:, 0], latent_3d_pca[:, 1], latent_3d_pca[:, 2],
-                c=day_of_year_frac, cmap='viridis', s=12, alpha=0.8)
-plt.colorbar(sc, ax=ax, label='Day of Year (Fraction)')
-ax.set_title("PCA - Latent Space (3D)", fontsize=14)
-ax.set_xlabel("PC 1")
-ax.set_ylabel("PC 2")
-ax.set_zlabel("PC 3")
-plt.tight_layout()
-plt.savefig("images/latent_space_pca_3d_DOY.png", dpi=300)
-plt.close()
-
 # Interactive plotly PCA (3D)
 fig_pca_plotly = px.scatter_3d(
     x=latent_3d_pca[:, 0], y=latent_3d_pca[:, 1], z=latent_3d_pca[:, 2],
@@ -63,8 +48,11 @@ fig_pca_plotly.write_html("images/latent_space_pca_3d_interactive_DOY.html")
 # ---------------------------------------
 # PCA - 2D Pairwise Plots
 # ---------------------------------------
-pair_labels = [("PC 1", "PC 2"), ("PC 1", "PC 3"), ("PC 2", "PC 3")]
-pairs = [(0, 1), (0, 2), (1, 2)]
+#pair_labels = [("PC 1", "PC 2"), ("PC 1", "PC 3"), ("PC 2", "PC 3")]
+#pairs = [(0, 1), (0, 2), (1, 2)]
+
+pair_labels = [("PC 1", "PC 2")]
+pairs = [(0, 1)]
 
 for (i, j), (xlabel, ylabel) in zip(pairs, pair_labels):
     plt.figure(figsize=(8, 6))

@@ -4,12 +4,11 @@ import sys
 import argparse
 
 if __name__=="__main__":
-    scripts = ["analysis_scripts/flatten_pca_day_of_year.py", 
+    scripts = ["latent.py",
+               "analysis_scripts/flatten_pca_day_of_year.py", 
                "analysis_scripts/flatten_pca_temp.py", 
-               "analysis_scripts/flatten_pca_plain.py", 
                "analysis_scripts/flatten_tsne_day_of_year.py", 
-               "analysis_scripts/flatten_tsne_temp.py"
-               "analysis_scripts/flatten_tsne_plain.py"]
+               "analysis_scripts/flatten_tsne_temp.py"]
     for script in scripts:
         print(f"\n--- Running {script} ---")
         # Suppress Python warnings and set environment variable to ignore warnings in subprocess

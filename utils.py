@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+import random
 from tensorflow.keras import layers
 
 class Sampling(layers.Layer):
@@ -39,3 +40,4 @@ def set_seed(SEED=42):
     """Set the random seed for reproducibility."""
     np.random.seed(SEED)
     tf.random.set_seed(SEED)
+    random.seed(SEED)

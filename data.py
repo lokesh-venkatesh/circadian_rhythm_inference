@@ -83,6 +83,8 @@ index = pd.to_datetime(index)
 
 # Create DataFrame with timestamp index
 dft_reshaped = pd.DataFrame(data=X, index=index)
+# Keep only rows where the index month is January
+# dft_reshaped = dft_reshaped[dft_reshaped.index.month.isin([1])]
 
 # Shuffle rows reproducibly
 dft_reshaped = dft_reshaped.sample(frac=1)
