@@ -1,494 +1,823 @@
-(base) PS C:\Users\lokes\Desktop\circadian_rhythms\david_kyle_vae_model> python .\config.py
-
---- Running data.py ---
-offset:  23.27571895
-scale:   9.89200131
---- Finished data.py ---
-
---- Running train.py ---
-2025-06-08 16:41:41.787711: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-WARNING:tensorflow:From C:\Users\lokes\anaconda3\Lib\site-packages\keras\src\backend\tensorflow\core.py:219: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
-
-Model: "encoder"
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ input_layer (InputLayer)      │ (None, 1536)              │               0 │ -                          │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ reshape (Reshape)             │ (None, 1536, 1)           │               0 │ input_layer[0][0]          │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ conv1d (Conv1D)               │ (None, 512, 20)           │             120 │ reshape[0][0]              │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ conv1d_1 (Conv1D)             │ (None, 256, 20)           │           1,220 │ conv1d[0][0]               │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ conv1d_2 (Conv1D)             │ (None, 128, 20)           │           1,220 │ conv1d_1[0][0]             │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ conv1d_3 (Conv1D)             │ (None, 64, 20)            │           1,220 │ conv1d_2[0][0]             │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ conv1d_4 (Conv1D)             │ (None, 32, 20)            │           1,220 │ conv1d_3[0][0]             │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ conv1d_5 (Conv1D)             │ (None, 16, 20)            │           1,220 │ conv1d_4[0][0]             │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ get_item (GetItem)            │ (None, 16, 10)            │               0 │ conv1d_5[0][0]             │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ get_item_1 (GetItem)          │ (None, 16, 10)            │               0 │ conv1d_5[0][0]             │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ sampling (Sampling)           │ (None, 16, 10)            │               0 │ get_item[0][0],            │
-│                               │                           │                 │ get_item_1[0][0]           │
-└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
- Total params: 6,220 (24.30 KB)
- Trainable params: 6,220 (24.30 KB)
- Non-trainable params: 0 (0.00 B)
-Model: "decoder"
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
-┃ Layer (type)                         ┃ Output Shape                ┃         Param # ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
-│ input_layer_1 (InputLayer)           │ (None, None, 10)            │               0 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ conv1d_transpose (Conv1DTranspose)   │ (None, None, 20)            │             620 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ conv1d_transpose_1 (Conv1DTranspose) │ (None, None, 20)            │           1,220 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ conv1d_transpose_2 (Conv1DTranspose) │ (None, None, 20)            │           1,220 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ conv1d_transpose_3 (Conv1DTranspose) │ (None, None, 20)            │           1,220 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ conv1d_transpose_4 (Conv1DTranspose) │ (None, None, 20)            │           1,220 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ conv1d_transpose_5 (Conv1DTranspose) │ (None, None, 1)             │             101 │
-├──────────────────────────────────────┼─────────────────────────────┼─────────────────┤
-│ reshape_1 (Reshape)                  │ (None, None)                │               0 │
-└──────────────────────────────────────┴─────────────────────────────┴─────────────────┘
- Total params: 5,601 (21.88 KB)
- Trainable params: 5,601 (21.88 KB)
- Non-trainable params: 0 (0.00 B)
-Model: "seasonal_prior"
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ input_layer_2 (InputLayer)    │ (None, None, 6)           │               0 │ -                          │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ dense (Dense)                 │ (None, None, 20)          │             120 │ input_layer_2[0][0]        │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ get_item_2 (GetItem)          │ (None, None, 10)          │               0 │ dense[0][0]                │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ get_item_3 (GetItem)          │ (None, None, 10)          │               0 │ dense[0][0]                │
-├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ sampling_1 (Sampling)         │ (None, None, 10)          │               0 │ get_item_2[0][0],          │
-│                               │                           │                 │ get_item_3[0][0]           │
-└───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
- Total params: 120 (480.00 B)
- Trainable params: 120 (480.00 B)
- Non-trainable params: 0 (0.00 B)
-Epoch 1/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 3s 29ms/step - loss: 1.3824 - val_kl: 0.0207 - val_loss: 1.3987 - val_recon: 1.3780
-Epoch 2/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 1.2986 - val_kl: 0.0283 - val_loss: 1.3230 - val_recon: 1.2947
-Epoch 3/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 1.1866 - val_kl: 0.0249 - val_loss: 1.2069 - val_recon: 1.1821
-Epoch 4/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 1.0300 - val_kl: 0.0294 - val_loss: 0.9702 - val_recon: 0.9408
-Epoch 5/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9178 - val_kl: 0.0266 - val_loss: 0.9293 - val_recon: 0.9027
-Epoch 6/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8840 - val_kl: 0.0279 - val_loss: 0.8955 - val_recon: 0.8676
-Epoch 7/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8582 - val_kl: 0.0260 - val_loss: 0.8733 - val_recon: 0.8473
-Epoch 8/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8356 - val_kl: 0.0252 - val_loss: 0.8447 - val_recon: 0.8195
-Epoch 9/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.8147 - val_kl: 0.0237 - val_loss: 0.8326 - val_recon: 0.8089
-Epoch 10/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.7952 - val_kl: 0.0229 - val_loss: 0.8083 - val_recon: 0.7854
-Epoch 11/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.7773 - val_kl: 0.0231 - val_loss: 0.7905 - val_recon: 0.7674
-Epoch 12/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.7598 - val_kl: 0.0226 - val_loss: 0.7730 - val_recon: 0.7504
-Epoch 13/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.7425 - val_kl: 0.0220 - val_loss: 0.7584 - val_recon: 0.7364
-Epoch 14/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.7256 - val_kl: 0.0222 - val_loss: 0.7409 - val_recon: 0.7187
-Epoch 15/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.7084 - val_kl: 0.0221 - val_loss: 0.7254 - val_recon: 0.7033
-Epoch 16/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6927 - val_kl: 0.0218 - val_loss: 0.7040 - val_recon: 0.6822
-Epoch 17/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6767 - val_kl: 0.0226 - val_loss: 0.6864 - val_recon: 0.6637
-Epoch 18/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6614 - val_kl: 0.0218 - val_loss: 0.6736 - val_recon: 0.6518
-Epoch 19/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6469 - val_kl: 0.0231 - val_loss: 0.6573 - val_recon: 0.6343
-Epoch 20/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6313 - val_kl: 0.0231 - val_loss: 0.6439 - val_recon: 0.6208
-Epoch 21/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6166 - val_kl: 0.0235 - val_loss: 0.6266 - val_recon: 0.6030
-Epoch 22/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.6021 - val_kl: 0.0235 - val_loss: 0.6133 - val_recon: 0.5898
-Epoch 23/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.5879 - val_kl: 0.0243 - val_loss: 0.5979 - val_recon: 0.5736
-Epoch 24/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.5737 - val_kl: 0.0250 - val_loss: 0.5813 - val_recon: 0.5564
-Epoch 25/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.5595 - val_kl: 0.0254 - val_loss: 0.5713 - val_recon: 0.5459
-Epoch 26/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: 0.5457 - val_kl: 0.0254 - val_loss: 0.5540 - val_recon: 0.5286
-Epoch 27/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.5318 - val_kl: 0.0263 - val_loss: 0.5394 - val_recon: 0.5131
-Epoch 28/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.5182 - val_kl: 0.0255 - val_loss: 0.5257 - val_recon: 0.5002
-Epoch 29/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.5046 - val_kl: 0.0266 - val_loss: 0.5133 - val_recon: 0.4867
-Epoch 30/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.4906 - val_kl: 0.0271 - val_loss: 0.4985 - val_recon: 0.4714
-Epoch 31/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.4768 - val_kl: 0.0274 - val_loss: 0.4857 - val_recon: 0.4584
-Epoch 32/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.4644 - val_kl: 0.0276 - val_loss: 0.4694 - val_recon: 0.4418
-Epoch 33/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.4507 - val_kl: 0.0286 - val_loss: 0.4578 - val_recon: 0.4291
-Epoch 34/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.4370 - val_kl: 0.0285 - val_loss: 0.4425 - val_recon: 0.4139
-Epoch 35/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.4246 - val_kl: 0.0287 - val_loss: 0.4298 - val_recon: 0.4011
-Epoch 36/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.4111 - val_kl: 0.0291 - val_loss: 0.4127 - val_recon: 0.3835
-Epoch 37/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.3979 - val_kl: 0.0293 - val_loss: 0.4006 - val_recon: 0.3713
-Epoch 38/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: 0.3847 - val_kl: 0.0296 - val_loss: 0.3891 - val_recon: 0.3595
-Epoch 39/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.3718 - val_kl: 0.0305 - val_loss: 0.3776 - val_recon: 0.3471
-Epoch 40/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.3592 - val_kl: 0.0312 - val_loss: 0.3612 - val_recon: 0.3301
-Epoch 41/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.3469 - val_kl: 0.0318 - val_loss: 0.3484 - val_recon: 0.3167
-Epoch 42/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.3339 - val_kl: 0.0325 - val_loss: 0.3351 - val_recon: 0.3026
-Epoch 43/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.3211 - val_kl: 0.0326 - val_loss: 0.3286 - val_recon: 0.2960
-Epoch 44/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.3092 - val_kl: 0.0333 - val_loss: 0.3089 - val_recon: 0.2756
-Epoch 45/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.2958 - val_kl: 0.0335 - val_loss: 0.2950 - val_recon: 0.2615
-Epoch 46/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.2827 - val_kl: 0.0338 - val_loss: 0.2815 - val_recon: 0.2477
-Epoch 47/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.2702 - val_kl: 0.0353 - val_loss: 0.2716 - val_recon: 0.2363
-Epoch 48/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.2578 - val_kl: 0.0366 - val_loss: 0.2550 - val_recon: 0.2184
-Epoch 49/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.2451 - val_kl: 0.0368 - val_loss: 0.2425 - val_recon: 0.2057
-Epoch 50/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.2323 - val_kl: 0.0366 - val_loss: 0.2330 - val_recon: 0.1964
-Epoch 51/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.2204 - val_kl: 0.0374 - val_loss: 0.2165 - val_recon: 0.1791
-Epoch 52/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.2081 - val_kl: 0.0381 - val_loss: 0.2049 - val_recon: 0.1668
-Epoch 53/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.1968 - val_kl: 0.0386 - val_loss: 0.1928 - val_recon: 0.1542
-Epoch 54/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.1859 - val_kl: 0.0400 - val_loss: 0.1855 - val_recon: 0.1455
-Epoch 55/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.1727 - val_kl: 0.0405 - val_loss: 0.1688 - val_recon: 0.1283
-Epoch 56/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.1592 - val_kl: 0.0406 - val_loss: 0.1546 - val_recon: 0.1140
-Epoch 57/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.1474 - val_kl: 0.0416 - val_loss: 0.1420 - val_recon: 0.1004
-Epoch 58/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - loss: 0.1356 - val_kl: 0.0416 - val_loss: 0.1319 - val_recon: 0.0903
-Epoch 59/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: 0.1238 - val_kl: 0.0426 - val_loss: 0.1180 - val_recon: 0.0754
-Epoch 60/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.1123 - val_kl: 0.0428 - val_loss: 0.1065 - val_recon: 0.0637
-Epoch 61/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.1002 - val_kl: 0.0439 - val_loss: 0.0926 - val_recon: 0.0487
-Epoch 62/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: 0.0889 - val_kl: 0.0436 - val_loss: 0.0822 - val_recon: 0.0386
-Epoch 63/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.0770 - val_kl: 0.0455 - val_loss: 0.0670 - val_recon: 0.0216
-Epoch 64/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.0668 - val_kl: 0.0462 - val_loss: 0.0593 - val_recon: 0.0131
-Epoch 65/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.0561 - val_kl: 0.0458 - val_loss: 0.0480 - val_recon: 0.0022
-Epoch 66/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.0462 - val_kl: 0.0468 - val_loss: 0.0354 - val_recon: -0.0115
-Epoch 67/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.0323 - val_kl: 0.0470 - val_loss: 0.0183 - val_recon: -0.0287
-Epoch 68/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.0200 - val_kl: 0.0478 - val_loss: 0.0092 - val_recon: -0.0387
-Epoch 69/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.0090 - val_kl: 0.0488 - val_loss: 0.0016 - val_recon: -0.0472
-Epoch 70/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.0022 - val_kl: 0.0485 - val_loss: -0.0121 - val_recon: -0.0606
-Epoch 71/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.0119 - val_kl: 0.0499 - val_loss: -0.0234 - val_recon: -0.0733
-Epoch 72/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.0241 - val_kl: 0.0514 - val_loss: -0.0375 - val_recon: -0.0889
-Epoch 73/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: -0.0355 - val_kl: 0.0517 - val_loss: -0.0471 - val_recon: -0.0988
-Epoch 74/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.0468 - val_kl: 0.0509 - val_loss: -0.0602 - val_recon: -0.1110
-Epoch 75/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.0576 - val_kl: 0.0538 - val_loss: -0.0698 - val_recon: -0.1236
-Epoch 76/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.0691 - val_kl: 0.0532 - val_loss: -0.0819 - val_recon: -0.1351
-Epoch 77/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.0798 - val_kl: 0.0531 - val_loss: -0.0935 - val_recon: -0.1466
-Epoch 78/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: -0.0904 - val_kl: 0.0553 - val_loss: -0.1049 - val_recon: -0.1602
-Epoch 79/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.1002 - val_kl: 0.0541 - val_loss: -0.1181 - val_recon: -0.1722
-Epoch 80/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.1118 - val_kl: 0.0565 - val_loss: -0.1256 - val_recon: -0.1821
-Epoch 81/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.1233 - val_kl: 0.0574 - val_loss: -0.1353 - val_recon: -0.1927
-Epoch 82/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.1319 - val_kl: 0.0565 - val_loss: -0.1489 - val_recon: -0.2054
-Epoch 83/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.1408 - val_kl: 0.0582 - val_loss: -0.1603 - val_recon: -0.2185
-Epoch 84/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.1541 - val_kl: 0.0589 - val_loss: -0.1682 - val_recon: -0.2272
-Epoch 85/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: -0.1624 - val_kl: 0.0596 - val_loss: -0.1763 - val_recon: -0.2359
-Epoch 86/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.1741 - val_kl: 0.0602 - val_loss: -0.1908 - val_recon: -0.2510
-Epoch 87/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.1838 - val_kl: 0.0619 - val_loss: -0.2039 - val_recon: -0.2658
-Epoch 88/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: -0.1939 - val_kl: 0.0611 - val_loss: -0.2120 - val_recon: -0.2731
-Epoch 89/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: -0.2047 - val_kl: 0.0619 - val_loss: -0.2225 - val_recon: -0.2844
-Epoch 90/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 31ms/step - loss: -0.2138 - val_kl: 0.0629 - val_loss: -0.2337 - val_recon: -0.2967
-Epoch 91/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - loss: -0.2238 - val_kl: 0.0634 - val_loss: -0.2421 - val_recon: -0.3056
-Epoch 92/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - loss: -0.2340 - val_kl: 0.0654 - val_loss: -0.2533 - val_recon: -0.3186
-Epoch 93/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 33ms/step - loss: -0.2432 - val_kl: 0.0653 - val_loss: -0.2643 - val_recon: -0.3297
-Epoch 94/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 32ms/step - loss: -0.2530 - val_kl: 0.0663 - val_loss: -0.2745 - val_recon: -0.3408
-Epoch 95/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 35ms/step - loss: -0.2636 - val_kl: 0.0670 - val_loss: -0.2836 - val_recon: -0.3506
-Epoch 96/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 34ms/step - loss: -0.2696 - val_kl: 0.0685 - val_loss: -0.2912 - val_recon: -0.3596
-Epoch 97/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 31ms/step - loss: -0.2804 - val_kl: 0.0686 - val_loss: -0.2970 - val_recon: -0.3657
-Epoch 98/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 33ms/step - loss: -0.2897 - val_kl: 0.0696 - val_loss: -0.3086 - val_recon: -0.3783
-Epoch 99/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 36ms/step - loss: -0.2988 - val_kl: 0.0708 - val_loss: -0.3191 - val_recon: -0.3899
-Epoch 100/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 32ms/step - loss: -0.3082 - val_kl: 0.0718 - val_loss: -0.3268 - val_recon: -0.3986
-Epoch 101/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - loss: -0.3165 - val_kl: 0.0732 - val_loss: -0.3376 - val_recon: -0.4108
-Epoch 102/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: -0.3247 - val_kl: 0.0727 - val_loss: -0.3477 - val_recon: -0.4205
-Epoch 103/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.3317 - val_kl: 0.0735 - val_loss: -0.3589 - val_recon: -0.4324
-Epoch 104/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.3388 - val_kl: 0.0747 - val_loss: -0.3577 - val_recon: -0.4324
-Epoch 105/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.3419 - val_kl: 0.0751 - val_loss: -0.3723 - val_recon: -0.4474
-Epoch 106/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.3479 - val_kl: 0.0771 - val_loss: -0.3841 - val_recon: -0.4612
-Epoch 107/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.3683 - val_kl: 0.0783 - val_loss: -0.3931 - val_recon: -0.4714
-Epoch 108/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: -0.3781 - val_kl: 0.0788 - val_loss: -0.4020 - val_recon: -0.4808
-Epoch 109/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.3848 - val_kl: 0.0799 - val_loss: -0.4080 - val_recon: -0.4878
-Epoch 110/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.3948 - val_kl: 0.0812 - val_loss: -0.4180 - val_recon: -0.4992
-Epoch 111/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.4039 - val_kl: 0.0818 - val_loss: -0.4312 - val_recon: -0.5130
-Epoch 112/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.4118 - val_kl: 0.0827 - val_loss: -0.4390 - val_recon: -0.5217
-Epoch 113/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.4205 - val_kl: 0.0842 - val_loss: -0.4472 - val_recon: -0.5314
-Epoch 114/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 16ms/step - loss: -0.4270 - val_kl: 0.0858 - val_loss: -0.4552 - val_recon: -0.5409
-Epoch 115/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.4363 - val_kl: 0.0871 - val_loss: -0.4627 - val_recon: -0.5499
-Epoch 116/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.4415 - val_kl: 0.0875 - val_loss: -0.4640 - val_recon: -0.5515
-Epoch 117/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.4522 - val_kl: 0.0885 - val_loss: -0.4795 - val_recon: -0.5680
-Epoch 118/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.4600 - val_kl: 0.0903 - val_loss: -0.4830 - val_recon: -0.5732
-Epoch 119/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.4645 - val_kl: 0.0912 - val_loss: -0.4959 - val_recon: -0.5871
-Epoch 120/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.4740 - val_kl: 0.0927 - val_loss: -0.4985 - val_recon: -0.5912
-Epoch 121/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: -0.4823 - val_kl: 0.0931 - val_loss: -0.5085 - val_recon: -0.6015
-Epoch 122/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.4865 - val_kl: 0.0946 - val_loss: -0.5153 - val_recon: -0.6098
-Epoch 123/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.4931 - val_kl: 0.0958 - val_loss: -0.5186 - val_recon: -0.6144
-Epoch 124/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5021 - val_kl: 0.0943 - val_loss: -0.5289 - val_recon: -0.6232
-Epoch 125/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5045 - val_kl: 0.0976 - val_loss: -0.5304 - val_recon: -0.6279
-Epoch 126/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5112 - val_kl: 0.0986 - val_loss: -0.5316 - val_recon: -0.6302
-Epoch 127/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.5172 - val_kl: 0.0980 - val_loss: -0.5525 - val_recon: -0.6504
-Epoch 128/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5227 - val_kl: 0.1001 - val_loss: -0.5548 - val_recon: -0.6549
-Epoch 129/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5298 - val_kl: 0.1010 - val_loss: -0.5575 - val_recon: -0.6586
-Epoch 130/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: -0.5329 - val_kl: 0.1001 - val_loss: -0.5622 - val_recon: -0.6623
-Epoch 131/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5374 - val_kl: 0.1016 - val_loss: -0.5609 - val_recon: -0.6625
-Epoch 132/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.5354 - val_kl: 0.1031 - val_loss: -0.5829 - val_recon: -0.6860
-Epoch 133/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5568 - val_kl: 0.1030 - val_loss: -0.5906 - val_recon: -0.6937
-Epoch 134/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: -0.5564 - val_kl: 0.1024 - val_loss: -0.5898 - val_recon: -0.6922
-Epoch 135/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5601 - val_kl: 0.1045 - val_loss: -0.6023 - val_recon: -0.7068
-Epoch 136/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: -0.5730 - val_kl: 0.1058 - val_loss: -0.6060 - val_recon: -0.7118
-Epoch 137/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5731 - val_kl: 0.1063 - val_loss: -0.6130 - val_recon: -0.7193
-Epoch 138/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5771 - val_kl: 0.1064 - val_loss: -0.6180 - val_recon: -0.7244
-Epoch 139/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5813 - val_kl: 0.1075 - val_loss: -0.6185 - val_recon: -0.7261
-Epoch 140/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5894 - val_kl: 0.1091 - val_loss: -0.6261 - val_recon: -0.7352
-Epoch 141/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.5938 - val_kl: 0.1092 - val_loss: -0.6313 - val_recon: -0.7405
-Epoch 142/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.5990 - val_kl: 0.1096 - val_loss: -0.6389 - val_recon: -0.7485
-Epoch 143/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.6045 - val_kl: 0.1102 - val_loss: -0.6438 - val_recon: -0.7540
-Epoch 144/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: -0.6075 - val_kl: 0.1104 - val_loss: -0.6389 - val_recon: -0.7492
-Epoch 145/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6096 - val_kl: 0.1130 - val_loss: -0.6505 - val_recon: -0.7635
-Epoch 146/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6142 - val_kl: 0.1122 - val_loss: -0.6499 - val_recon: -0.7621
-Epoch 147/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6186 - val_kl: 0.1137 - val_loss: -0.6535 - val_recon: -0.7672
-Epoch 148/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6217 - val_kl: 0.1120 - val_loss: -0.6597 - val_recon: -0.7717
-Epoch 149/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 16ms/step - loss: -0.6257 - val_kl: 0.1135 - val_loss: -0.6673 - val_recon: -0.7808
-Epoch 150/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6282 - val_kl: 0.1149 - val_loss: -0.6527 - val_recon: -0.7676
-Epoch 151/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6319 - val_kl: 0.1152 - val_loss: -0.6708 - val_recon: -0.7859
-Epoch 152/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: -0.6332 - val_kl: 0.1154 - val_loss: -0.6559 - val_recon: -0.7713
-Epoch 153/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6317 - val_kl: 0.1171 - val_loss: -0.6649 - val_recon: -0.7820
-Epoch 154/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6389 - val_kl: 0.1167 - val_loss: -0.6750 - val_recon: -0.7917
-Epoch 155/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: -0.6439 - val_kl: 0.1193 - val_loss: -0.6777 - val_recon: -0.7970
-Epoch 156/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: -0.6419 - val_kl: 0.1199 - val_loss: -0.6738 - val_recon: -0.7937
-Epoch 157/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: -0.6456 - val_kl: 0.1202 - val_loss: -0.6832 - val_recon: -0.8034
-Epoch 158/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: -0.6524 - val_kl: 0.1197 - val_loss: -0.6896 - val_recon: -0.8093
-Epoch 159/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.6549 - val_kl: 0.1213 - val_loss: -0.6914 - val_recon: -0.8127
-Epoch 160/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.6568 - val_kl: 0.1218 - val_loss: -0.6925 - val_recon: -0.8142
-Epoch 161/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.6562 - val_kl: 0.1230 - val_loss: -0.6985 - val_recon: -0.8215
-Epoch 162/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.6619 - val_kl: 0.1250 - val_loss: -0.6875 - val_recon: -0.8125
-Epoch 163/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: -0.6461 - val_kl: 0.1255 - val_loss: -0.6907 - val_recon: -0.8162
-Epoch 164/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: -0.6619 - val_kl: 0.1242 - val_loss: -0.7046 - val_recon: -0.8289
-Epoch 165/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.6690 - val_kl: 0.1259 - val_loss: -0.7048 - val_recon: -0.8306
-Epoch 166/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.6688 - val_kl: 0.1270 - val_loss: -0.7020 - val_recon: -0.8290
-Epoch 167/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: -0.6712 - val_kl: 0.1270 - val_loss: -0.7083 - val_recon: -0.8353
-Epoch 168/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - loss: -0.6705 - val_kl: 0.1283 - val_loss: -0.7127 - val_recon: -0.8410
-Epoch 169/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: -0.6745 - val_kl: 0.1300 - val_loss: -0.7107 - val_recon: -0.8408
-Epoch 170/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.6764 - val_kl: 0.1305 - val_loss: -0.7125 - val_recon: -0.8430
-Epoch 171/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.6750 - val_kl: 0.1307 - val_loss: -0.7167 - val_recon: -0.8474
-Epoch 172/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: -0.6750 - val_kl: 0.1303 - val_loss: -0.7173 - val_recon: -0.8477
-Epoch 173/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 30ms/step - loss: -0.6743 - val_kl: 0.1319 - val_loss: -0.7178 - val_recon: -0.8498
-Epoch 174/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: -0.6765 - val_kl: 0.1332 - val_loss: -0.7207 - val_recon: -0.8539
-Epoch 175/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: -0.6847 - val_kl: 0.1336 - val_loss: -0.7273 - val_recon: -0.8609
-Epoch 176/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.6879 - val_kl: 0.1351 - val_loss: -0.7326 - val_recon: -0.8677
-Epoch 177/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.6899 - val_kl: 0.1354 - val_loss: -0.7282 - val_recon: -0.8635
-Epoch 178/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: -0.6872 - val_kl: 0.1358 - val_loss: -0.7294 - val_recon: -0.8652
-Epoch 179/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.6899 - val_kl: 0.1355 - val_loss: -0.7326 - val_recon: -0.8680
-Epoch 180/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: -0.6926 - val_kl: 0.1389 - val_loss: -0.7309 - val_recon: -0.8698
-Epoch 181/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.6921 - val_kl: 0.1376 - val_loss: -0.7351 - val_recon: -0.8727
-Epoch 182/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.6968 - val_kl: 0.1378 - val_loss: -0.7222 - val_recon: -0.8600
-Epoch 183/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: -0.6795 - val_kl: 0.1385 - val_loss: -0.7254 - val_recon: -0.8639
-Epoch 184/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.6891 - val_kl: 0.1398 - val_loss: -0.7441 - val_recon: -0.8839
-Epoch 185/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: -0.6995 - val_kl: 0.1408 - val_loss: -0.7434 - val_recon: -0.8842
-Epoch 186/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.7008 - val_kl: 0.1413 - val_loss: -0.7511 - val_recon: -0.8924
-Epoch 187/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: -0.7015 - val_kl: 0.1425 - val_loss: -0.7460 - val_recon: -0.8885
-Epoch 188/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.6996 - val_kl: 0.1427 - val_loss: -0.7415 - val_recon: -0.8842
-Epoch 189/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.7021 - val_kl: 0.1430 - val_loss: -0.7501 - val_recon: -0.8931
-Epoch 190/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.7034 - val_kl: 0.1435 - val_loss: -0.7537 - val_recon: -0.8972
-Epoch 191/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.7067 - val_kl: 0.1447 - val_loss: -0.7533 - val_recon: -0.8980
-Epoch 192/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.7045 - val_kl: 0.1437 - val_loss: -0.7556 - val_recon: -0.8993
-Epoch 193/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.7045 - val_kl: 0.1462 - val_loss: -0.7589 - val_recon: -0.9050
-Epoch 194/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.7105 - val_kl: 0.1466 - val_loss: -0.7575 - val_recon: -0.9041
-Epoch 195/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: -0.7120 - val_kl: 0.1479 - val_loss: -0.7661 - val_recon: -0.9140
-Epoch 196/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: -0.7108 - val_kl: 0.1476 - val_loss: -0.7599 - val_recon: -0.9075
-Epoch 197/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.7043 - val_kl: 0.1469 - val_loss: -0.7421 - val_recon: -0.8890
-Epoch 198/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: -0.7114 - val_kl: 0.1492 - val_loss: -0.7660 - val_recon: -0.9152
-Epoch 199/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: -0.7105 - val_kl: 0.1493 - val_loss: -0.7540 - val_recon: -0.9033
-Epoch 200/200
-29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: -0.7015 - val_kl: 0.1498 - val_loss: -0.7563 - val_recon: -0.9061
-noise emission sigma:  0.10236394
-Reconstruction loss:  -0.86940855
-KL loss:              0.15089996
-Total loss:           -0.7185086
+Epoch 95/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9446 - val_kl: 1.2187e-06 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 96/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9446 - val_kl: 2.5354e-06 - val_loss: 1.0025 - val_recon: 1.0025
+Epoch 97/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9446 - val_kl: 4.3280e-06 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 98/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9445 - val_kl: 4.7366e-06 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 99/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.9445 - val_kl: 1.1547e-05 - val_loss: 1.0031 - val_recon: 1.0031
+Epoch 100/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9446 - val_kl: 4.4740e-06 - val_loss: 1.0025 - val_recon: 1.0025
+Epoch 101/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9446 - val_kl: 4.2008e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 102/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9446 - val_kl: 2.7615e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 103/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9445 - val_kl: 3.1335e-06 - val_loss: 1.0023 - val_recon: 1.0023
+Epoch 104/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9446 - val_kl: 2.8227e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 105/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.9445 - val_kl: 2.0485e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 106/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9445 - val_kl: 2.0087e-06 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 107/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.9445 - val_kl: 1.7110e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 108/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.9446 - val_kl: 9.8670e-07 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 109/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.9445 - val_kl: 9.2147e-07 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 110/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.9445 - val_kl: 8.3932e-07 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 111/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.9445 - val_kl: 2.4345e-06 - val_loss: 1.0024 - val_recon: 1.0024
+Epoch 112/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9445 - val_kl: 1.9557e-06 - val_loss: 1.0023 - val_recon: 1.0023
+Epoch 113/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9445 - val_kl: 8.8381e-07 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 114/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.9445 - val_kl: 8.8190e-07 - val_loss: 1.0025 - val_recon: 1.0025
+Epoch 115/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9444 - val_kl: 1.5559e-06 - val_loss: 1.0021 - val_recon: 1.0021
+Epoch 116/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9445 - val_kl: 2.4469e-06 - val_loss: 1.0024 - val_recon: 1.0024
+Epoch 117/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9445 - val_kl: 1.7554e-06 - val_loss: 1.0027 - val_recon: 1.0027
+Epoch 118/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.9444 - val_kl: 2.1935e-06 - val_loss: 1.0024 - val_recon: 1.0024
+Epoch 119/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.9445 - val_kl: 9.9822e-07 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 120/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9445 - val_kl: 1.7865e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 121/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9444 - val_kl: 4.8962e-07 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 122/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 5.2092e-07 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 123/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 9.1852e-07 - val_loss: 1.0027 - val_recon: 1.0027
+Epoch 124/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 3.5462e-06 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 125/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 5.0294e-06 - val_loss: 1.0025 - val_recon: 1.0025
+Epoch 126/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 2.9831e-06 - val_loss: 1.0023 - val_recon: 1.0023
+Epoch 127/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 3.3517e-06 - val_loss: 1.0025 - val_recon: 1.0025
+Epoch 128/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 6.8441e-06 - val_loss: 1.0024 - val_recon: 1.0024
+Epoch 129/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 4.7266e-06 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 130/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 6.5356e-06 - val_loss: 1.0029 - val_recon: 1.0029
+Epoch 131/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 6.8946e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 132/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9444 - val_kl: 3.2192e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 133/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 3.6150e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 134/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 4.0302e-06 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 135/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9443 - val_kl: 2.7572e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 136/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 6.4515e-06 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 137/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9442 - val_kl: 1.3565e-05 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 138/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 1.7262e-05 - val_loss: 1.0018 - val_recon: 1.0018
+Epoch 139/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 1.9066e-05 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 140/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9443 - val_kl: 2.6473e-05 - val_loss: 1.0031 - val_recon: 1.0031
+Epoch 141/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 1.4988e-05 - val_loss: 1.0021 - val_recon: 1.0021
+Epoch 142/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9443 - val_kl: 9.5923e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 143/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 3.9452e-06 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 144/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 4.4716e-06 - val_loss: 1.0024 - val_recon: 1.0024
+Epoch 145/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 8.6204e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 146/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 5.3222e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 147/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9442 - val_kl: 7.7882e-06 - val_loss: 1.0027 - val_recon: 1.0026
+Epoch 148/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 8.6302e-06 - val_loss: 1.0028 - val_recon: 1.0028
+Epoch 149/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9442 - val_kl: 1.3354e-05 - val_loss: 1.0027 - val_recon: 1.0027
+Epoch 150/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.9443 - val_kl: 4.4309e-06 - val_loss: 1.0026 - val_recon: 1.0026
+Epoch 151/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 2.5606e-06 - val_loss: 1.0025 - val_recon: 1.0025
+Epoch 152/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9443 - val_kl: 7.5212e-06 - val_loss: 1.0021 - val_recon: 1.0021
+Epoch 153/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 7.6691e-06 - val_loss: 1.0030 - val_recon: 1.0030
+Epoch 154/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9442 - val_kl: 7.2593e-06 - val_loss: 1.0022 - val_recon: 1.0022
+Epoch 155/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9442 - val_kl: 2.2208e-05 - val_loss: 1.0038 - val_recon: 1.0038
+Epoch 156/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9441 - val_kl: 3.3180e-05 - val_loss: 1.0027 - val_recon: 1.0026
+Epoch 157/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 2.8885e-05 - val_loss: 1.0016 - val_recon: 1.0016
+Epoch 158/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9442 - val_kl: 2.4233e-05 - val_loss: 1.0025 - val_recon: 1.0024
+Epoch 159/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9442 - val_kl: 2.7877e-05 - val_loss: 1.0024 - val_recon: 1.0024
+Epoch 160/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9443 - val_kl: 2.7068e-05 - val_loss: 1.0017 - val_recon: 1.0017
+Epoch 161/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9442 - val_kl: 2.2245e-05 - val_loss: 1.0034 - val_recon: 1.0034
+Epoch 162/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9442 - val_kl: 5.3154e-05 - val_loss: 1.0031 - val_recon: 1.0030
+Epoch 163/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9442 - val_kl: 3.0207e-05 - val_loss: 1.0038 - val_recon: 1.0038
+Epoch 164/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9442 - val_kl: 4.4995e-05 - val_loss: 1.0015 - val_recon: 1.0015
+Epoch 165/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.9441 - val_kl: 9.3266e-05 - val_loss: 1.0030 - val_recon: 1.0029
+Epoch 166/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9441 - val_kl: 1.2332e-04 - val_loss: 1.0008 - val_recon: 1.0007
+Epoch 167/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9439 - val_kl: 3.7719e-04 - val_loss: 1.0036 - val_recon: 1.0032
+Epoch 168/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9430 - val_kl: 0.0014 - val_loss: 1.0036 - val_recon: 1.0023
+Epoch 169/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9325 - val_kl: 0.0169 - val_loss: 0.9526 - val_recon: 0.9357
+Epoch 170/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9135 - val_kl: 0.0245 - val_loss: 0.8937 - val_recon: 0.8692
+Epoch 171/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.9053 - val_kl: 0.0270 - val_loss: 0.8678 - val_recon: 0.8408
+Epoch 172/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8997 - val_kl: 0.0275 - val_loss: 0.8689 - val_recon: 0.8415
+Epoch 173/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8873 - val_kl: 0.0301 - val_loss: 0.8306 - val_recon: 0.8005
+Epoch 174/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8749 - val_kl: 0.0323 - val_loss: 0.8360 - val_recon: 0.8037
+Epoch 175/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8692 - val_kl: 0.0402 - val_loss: 0.8137 - val_recon: 0.7735
+Epoch 176/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8617 - val_kl: 0.0438 - val_loss: 0.8052 - val_recon: 0.7613
+Epoch 177/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8588 - val_kl: 0.0437 - val_loss: 0.8019 - val_recon: 0.7582
+Epoch 178/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8576 - val_kl: 0.0474 - val_loss: 0.7833 - val_recon: 0.7359
+Epoch 179/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8556 - val_kl: 0.0475 - val_loss: 0.8022 - val_recon: 0.7547
+Epoch 180/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8514 - val_kl: 0.0496 - val_loss: 0.7543 - val_recon: 0.7047
+Epoch 181/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8522 - val_kl: 0.0475 - val_loss: 0.8020 - val_recon: 0.7545
+Epoch 182/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8496 - val_kl: 0.0472 - val_loss: 0.7814 - val_recon: 0.7343
+Epoch 183/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8460 - val_kl: 0.0491 - val_loss: 0.7680 - val_recon: 0.7189
+Epoch 184/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8497 - val_kl: 0.0506 - val_loss: 0.7602 - val_recon: 0.7095
+Epoch 185/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8479 - val_kl: 0.0531 - val_loss: 0.7366 - val_recon: 0.6835
+Epoch 186/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8450 - val_kl: 0.0510 - val_loss: 0.7375 - val_recon: 0.6865
+Epoch 187/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8462 - val_kl: 0.0553 - val_loss: 0.7420 - val_recon: 0.6867
+Epoch 188/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8462 - val_kl: 0.0536 - val_loss: 0.7453 - val_recon: 0.6918
+Epoch 189/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8490 - val_kl: 0.0506 - val_loss: 0.7558 - val_recon: 0.7053
+Epoch 190/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8502 - val_kl: 0.0551 - val_loss: 0.7306 - val_recon: 0.6755
+Epoch 191/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8438 - val_kl: 0.0542 - val_loss: 0.7557 - val_recon: 0.7015
+Epoch 192/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8466 - val_kl: 0.0572 - val_loss: 0.7636 - val_recon: 0.7064
+Epoch 193/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8472 - val_kl: 0.0561 - val_loss: 0.7535 - val_recon: 0.6974
+Epoch 194/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8479 - val_kl: 0.0551 - val_loss: 0.7354 - val_recon: 0.6804
+Epoch 195/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8446 - val_kl: 0.0571 - val_loss: 0.7545 - val_recon: 0.6973
+Epoch 196/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8475 - val_kl: 0.0559 - val_loss: 0.7462 - val_recon: 0.6903
+Epoch 197/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8429 - val_kl: 0.0543 - val_loss: 0.7948 - val_recon: 0.7405
+Epoch 198/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8461 - val_kl: 0.0583 - val_loss: 0.7415 - val_recon: 0.6832
+Epoch 199/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8465 - val_kl: 0.0552 - val_loss: 0.7526 - val_recon: 0.6975
+Epoch 200/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8407 - val_kl: 0.0545 - val_loss: 0.7394 - val_recon: 0.6849
+Epoch 201/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8484 - val_kl: 0.0573 - val_loss: 0.7694 - val_recon: 0.7121
+Epoch 202/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8430 - val_kl: 0.0551 - val_loss: 0.7516 - val_recon: 0.6965
+Epoch 203/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8409 - val_kl: 0.0560 - val_loss: 0.7163 - val_recon: 0.6602
+Epoch 204/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8448 - val_kl: 0.0564 - val_loss: 0.7365 - val_recon: 0.6801
+Epoch 205/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8421 - val_kl: 0.0564 - val_loss: 0.7473 - val_recon: 0.6909
+Epoch 206/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8439 - val_kl: 0.0565 - val_loss: 0.7250 - val_recon: 0.6685
+Epoch 207/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8446 - val_kl: 0.0552 - val_loss: 0.7816 - val_recon: 0.7265
+Epoch 208/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8440 - val_kl: 0.0546 - val_loss: 0.6963 - val_recon: 0.6416
+Epoch 209/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8397 - val_kl: 0.0550 - val_loss: 0.7256 - val_recon: 0.6705
+Epoch 210/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8416 - val_kl: 0.0536 - val_loss: 0.7539 - val_recon: 0.7004
+Epoch 211/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8413 - val_kl: 0.0543 - val_loss: 0.7777 - val_recon: 0.7234
+Epoch 212/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8441 - val_kl: 0.0584 - val_loss: 0.7631 - val_recon: 0.7046
+Epoch 213/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8454 - val_kl: 0.0545 - val_loss: 0.7320 - val_recon: 0.6776
+Epoch 214/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8403 - val_kl: 0.0560 - val_loss: 0.7072 - val_recon: 0.6512
+Epoch 215/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 0s 17ms/step - loss: 0.8417 - val_kl: 0.0540 - val_loss: 0.7443 - val_recon: 0.6903
+Epoch 216/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8413 - val_kl: 0.0566 - val_loss: 0.7204 - val_recon: 0.6638
+Epoch 217/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8441 - val_kl: 0.0556 - val_loss: 0.7432 - val_recon: 0.6877
+Epoch 218/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8413 - val_kl: 0.0578 - val_loss: 0.7596 - val_recon: 0.7018
+Epoch 219/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8454 - val_kl: 0.0553 - val_loss: 0.7496 - val_recon: 0.6943
+Epoch 220/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8417 - val_kl: 0.0576 - val_loss: 0.7670 - val_recon: 0.7094
+Epoch 221/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8438 - val_kl: 0.0547 - val_loss: 0.6998 - val_recon: 0.6450
+Epoch 222/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8432 - val_kl: 0.0571 - val_loss: 0.7435 - val_recon: 0.6864
+Epoch 223/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8433 - val_kl: 0.0569 - val_loss: 0.7327 - val_recon: 0.6758
+Epoch 224/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8450 - val_kl: 0.0547 - val_loss: 0.7484 - val_recon: 0.6938
+Epoch 225/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8438 - val_kl: 0.0566 - val_loss: 0.7565 - val_recon: 0.6999
+Epoch 226/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8420 - val_kl: 0.0552 - val_loss: 0.7262 - val_recon: 0.6709
+Epoch 227/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8433 - val_kl: 0.0542 - val_loss: 0.7448 - val_recon: 0.6905
+Epoch 228/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8389 - val_kl: 0.0553 - val_loss: 0.7499 - val_recon: 0.6946
+Epoch 229/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8441 - val_kl: 0.0601 - val_loss: 0.7357 - val_recon: 0.6756
+Epoch 230/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8432 - val_kl: 0.0573 - val_loss: 0.7432 - val_recon: 0.6859
+Epoch 231/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8425 - val_kl: 0.0562 - val_loss: 0.7370 - val_recon: 0.6807
+Epoch 232/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8413 - val_kl: 0.0580 - val_loss: 0.7263 - val_recon: 0.6683
+Epoch 233/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8476 - val_kl: 0.0575 - val_loss: 0.7454 - val_recon: 0.6878
+Epoch 234/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8473 - val_kl: 0.0575 - val_loss: 0.7303 - val_recon: 0.6728
+Epoch 235/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8384 - val_kl: 0.0547 - val_loss: 0.7531 - val_recon: 0.6984
+Epoch 236/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8444 - val_kl: 0.0545 - val_loss: 0.7759 - val_recon: 0.7214
+Epoch 237/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8450 - val_kl: 0.0563 - val_loss: 0.7324 - val_recon: 0.6760
+Epoch 238/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8419 - val_kl: 0.0581 - val_loss: 0.7262 - val_recon: 0.6681
+Epoch 239/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8433 - val_kl: 0.0552 - val_loss: 0.7452 - val_recon: 0.6899
+Epoch 240/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8419 - val_kl: 0.0564 - val_loss: 0.7264 - val_recon: 0.6701
+Epoch 241/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8418 - val_kl: 0.0568 - val_loss: 0.7377 - val_recon: 0.6809
+Epoch 242/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8419 - val_kl: 0.0547 - val_loss: 0.7430 - val_recon: 0.6883
+Epoch 243/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8417 - val_kl: 0.0546 - val_loss: 0.7545 - val_recon: 0.6999
+Epoch 244/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8431 - val_kl: 0.0562 - val_loss: 0.7227 - val_recon: 0.6665
+Epoch 245/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8447 - val_kl: 0.0563 - val_loss: 0.7252 - val_recon: 0.6689
+Epoch 246/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8415 - val_kl: 0.0565 - val_loss: 0.7375 - val_recon: 0.6810
+Epoch 247/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8433 - val_kl: 0.0569 - val_loss: 0.7573 - val_recon: 0.7004
+Epoch 248/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8438 - val_kl: 0.0567 - val_loss: 0.7558 - val_recon: 0.6990
+Epoch 249/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8409 - val_kl: 0.0567 - val_loss: 0.7455 - val_recon: 0.6888
+Epoch 250/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8403 - val_kl: 0.0546 - val_loss: 0.7415 - val_recon: 0.6868
+Epoch 251/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8419 - val_kl: 0.0565 - val_loss: 0.7356 - val_recon: 0.6791
+Epoch 252/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8440 - val_kl: 0.0566 - val_loss: 0.7051 - val_recon: 0.6485
+Epoch 253/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8437 - val_kl: 0.0561 - val_loss: 0.7367 - val_recon: 0.6807
+Epoch 254/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.8390 - val_kl: 0.0567 - val_loss: 0.7794 - val_recon: 0.7227
+Epoch 255/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8409 - val_kl: 0.0570 - val_loss: 0.7341 - val_recon: 0.6771
+Epoch 256/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8383 - val_kl: 0.0562 - val_loss: 0.7103 - val_recon: 0.6541
+Epoch 257/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.8437 - val_kl: 0.0568 - val_loss: 0.7261 - val_recon: 0.6693
+Epoch 258/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8422 - val_kl: 0.0562 - val_loss: 0.7298 - val_recon: 0.6735
+Epoch 259/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8416 - val_kl: 0.0566 - val_loss: 0.7012 - val_recon: 0.6446
+Epoch 260/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8427 - val_kl: 0.0574 - val_loss: 0.7053 - val_recon: 0.6480
+Epoch 261/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8417 - val_kl: 0.0571 - val_loss: 0.7278 - val_recon: 0.6706
+Epoch 262/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8423 - val_kl: 0.0557 - val_loss: 0.7533 - val_recon: 0.6976
+Epoch 263/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8434 - val_kl: 0.0554 - val_loss: 0.7022 - val_recon: 0.6467
+Epoch 264/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8409 - val_kl: 0.0554 - val_loss: 0.7335 - val_recon: 0.6782
+Epoch 265/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 34ms/step - loss: 0.8375 - val_kl: 0.0581 - val_loss: 0.7512 - val_recon: 0.6931
+Epoch 266/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: 0.8426 - val_kl: 0.0553 - val_loss: 0.7195 - val_recon: 0.6642
+Epoch 267/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8411 - val_kl: 0.0563 - val_loss: 0.7462 - val_recon: 0.6899
+Epoch 268/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8426 - val_kl: 0.0555 - val_loss: 0.7824 - val_recon: 0.7268
+Epoch 269/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8397 - val_kl: 0.0547 - val_loss: 0.7660 - val_recon: 0.7113
+Epoch 270/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8453 - val_kl: 0.0580 - val_loss: 0.7484 - val_recon: 0.6904
+Epoch 271/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8457 - val_kl: 0.0547 - val_loss: 0.7150 - val_recon: 0.6603
+Epoch 272/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8409 - val_kl: 0.0551 - val_loss: 0.7418 - val_recon: 0.6866
+Epoch 273/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8426 - val_kl: 0.0554 - val_loss: 0.7434 - val_recon: 0.6880
+Epoch 274/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8409 - val_kl: 0.0560 - val_loss: 0.7199 - val_recon: 0.6639
+Epoch 275/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8404 - val_kl: 0.0552 - val_loss: 0.7341 - val_recon: 0.6789
+Epoch 276/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8473 - val_kl: 0.0571 - val_loss: 0.7492 - val_recon: 0.6921
+Epoch 277/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8408 - val_kl: 0.0545 - val_loss: 0.7507 - val_recon: 0.6962
+Epoch 278/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8419 - val_kl: 0.0552 - val_loss: 0.7287 - val_recon: 0.6735
+Epoch 279/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8449 - val_kl: 0.0565 - val_loss: 0.7607 - val_recon: 0.7041
+Epoch 280/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8430 - val_kl: 0.0556 - val_loss: 0.7334 - val_recon: 0.6777
+Epoch 281/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8432 - val_kl: 0.0578 - val_loss: 0.7523 - val_recon: 0.6945
+Epoch 282/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8380 - val_kl: 0.0529 - val_loss: 0.7571 - val_recon: 0.7042
+Epoch 283/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8417 - val_kl: 0.0569 - val_loss: 0.7256 - val_recon: 0.6687
+Epoch 284/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8412 - val_kl: 0.0549 - val_loss: 0.7521 - val_recon: 0.6972
+Epoch 285/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8445 - val_kl: 0.0575 - val_loss: 0.7472 - val_recon: 0.6897
+Epoch 286/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8414 - val_kl: 0.0571 - val_loss: 0.7511 - val_recon: 0.6941
+Epoch 287/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8437 - val_kl: 0.0576 - val_loss: 0.7616 - val_recon: 0.7040
+Epoch 288/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8384 - val_kl: 0.0560 - val_loss: 0.7161 - val_recon: 0.6601
+Epoch 289/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8422 - val_kl: 0.0584 - val_loss: 0.7699 - val_recon: 0.7115
+Epoch 290/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8414 - val_kl: 0.0567 - val_loss: 0.7123 - val_recon: 0.6556
+Epoch 291/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8386 - val_kl: 0.0570 - val_loss: 0.7611 - val_recon: 0.7040
+Epoch 292/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8422 - val_kl: 0.0575 - val_loss: 0.7683 - val_recon: 0.7107
+Epoch 293/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8405 - val_kl: 0.0558 - val_loss: 0.7490 - val_recon: 0.6932
+Epoch 294/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.8450 - val_kl: 0.0551 - val_loss: 0.7641 - val_recon: 0.7090
+Epoch 295/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8418 - val_kl: 0.0569 - val_loss: 0.7495 - val_recon: 0.6925
+Epoch 296/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8432 - val_kl: 0.0580 - val_loss: 0.7631 - val_recon: 0.7051
+Epoch 297/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8411 - val_kl: 0.0568 - val_loss: 0.6987 - val_recon: 0.6419
+Epoch 298/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8426 - val_kl: 0.0576 - val_loss: 0.7628 - val_recon: 0.7052
+Epoch 299/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8419 - val_kl: 0.0593 - val_loss: 0.7391 - val_recon: 0.6798
+Epoch 300/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8408 - val_kl: 0.0572 - val_loss: 0.7110 - val_recon: 0.6537
+Epoch 301/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8418 - val_kl: 0.0570 - val_loss: 0.7438 - val_recon: 0.6868
+Epoch 302/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8371 - val_kl: 0.0551 - val_loss: 0.7723 - val_recon: 0.7172
+Epoch 303/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8394 - val_kl: 0.0572 - val_loss: 0.7378 - val_recon: 0.6806
+Epoch 304/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8416 - val_kl: 0.0552 - val_loss: 0.7401 - val_recon: 0.6849
+Epoch 305/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8422 - val_kl: 0.0564 - val_loss: 0.7037 - val_recon: 0.6472
+Epoch 306/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8407 - val_kl: 0.0540 - val_loss: 0.7509 - val_recon: 0.6969
+Epoch 307/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8410 - val_kl: 0.0552 - val_loss: 0.7609 - val_recon: 0.7058
+Epoch 308/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8405 - val_kl: 0.0542 - val_loss: 0.7313 - val_recon: 0.6771
+Epoch 309/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8419 - val_kl: 0.0567 - val_loss: 0.7879 - val_recon: 0.7311
+Epoch 310/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8456 - val_kl: 0.0568 - val_loss: 0.7778 - val_recon: 0.7210
+Epoch 311/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8423 - val_kl: 0.0555 - val_loss: 0.7535 - val_recon: 0.6980
+Epoch 312/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8439 - val_kl: 0.0547 - val_loss: 0.7165 - val_recon: 0.6617
+Epoch 313/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8427 - val_kl: 0.0563 - val_loss: 0.7429 - val_recon: 0.6867
+Epoch 314/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8395 - val_kl: 0.0548 - val_loss: 0.7639 - val_recon: 0.7091
+Epoch 315/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8464 - val_kl: 0.0559 - val_loss: 0.7601 - val_recon: 0.7041
+Epoch 316/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8415 - val_kl: 0.0555 - val_loss: 0.7580 - val_recon: 0.7025
+Epoch 317/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8387 - val_kl: 0.0546 - val_loss: 0.7239 - val_recon: 0.6693
+Epoch 318/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8410 - val_kl: 0.0551 - val_loss: 0.7851 - val_recon: 0.7301
+Epoch 319/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8421 - val_kl: 0.0540 - val_loss: 0.7690 - val_recon: 0.7149
+Epoch 320/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8418 - val_kl: 0.0562 - val_loss: 0.7061 - val_recon: 0.6498
+Epoch 321/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8404 - val_kl: 0.0546 - val_loss: 0.7951 - val_recon: 0.7405
+Epoch 322/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8421 - val_kl: 0.0542 - val_loss: 0.7721 - val_recon: 0.7179
+Epoch 323/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8417 - val_kl: 0.0557 - val_loss: 0.7419 - val_recon: 0.6862
+Epoch 324/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8424 - val_kl: 0.0560 - val_loss: 0.7604 - val_recon: 0.7044
+Epoch 325/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8374 - val_kl: 0.0546 - val_loss: 0.7655 - val_recon: 0.7109
+Epoch 326/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8430 - val_kl: 0.0557 - val_loss: 0.7398 - val_recon: 0.6841
+Epoch 327/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8385 - val_kl: 0.0566 - val_loss: 0.7599 - val_recon: 0.7033
+Epoch 328/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8420 - val_kl: 0.0576 - val_loss: 0.7315 - val_recon: 0.6739
+Epoch 329/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8405 - val_kl: 0.0562 - val_loss: 0.7502 - val_recon: 0.6940
+Epoch 330/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8415 - val_kl: 0.0564 - val_loss: 0.7357 - val_recon: 0.6793
+Epoch 331/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8420 - val_kl: 0.0556 - val_loss: 0.7859 - val_recon: 0.7303
+Epoch 332/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8434 - val_kl: 0.0542 - val_loss: 0.7179 - val_recon: 0.6637
+Epoch 333/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8416 - val_kl: 0.0555 - val_loss: 0.7451 - val_recon: 0.6896
+Epoch 334/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8396 - val_kl: 0.0564 - val_loss: 0.7675 - val_recon: 0.7112
+Epoch 335/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8403 - val_kl: 0.0562 - val_loss: 0.7539 - val_recon: 0.6976
+Epoch 336/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8403 - val_kl: 0.0574 - val_loss: 0.7417 - val_recon: 0.6843
+Epoch 337/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8392 - val_kl: 0.0556 - val_loss: 0.7535 - val_recon: 0.6979
+Epoch 338/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8425 - val_kl: 0.0563 - val_loss: 0.7470 - val_recon: 0.6907
+Epoch 339/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8413 - val_kl: 0.0546 - val_loss: 0.7642 - val_recon: 0.7096
+Epoch 340/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8426 - val_kl: 0.0585 - val_loss: 0.7183 - val_recon: 0.6598
+Epoch 341/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8396 - val_kl: 0.0560 - val_loss: 0.7594 - val_recon: 0.7034
+Epoch 342/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8438 - val_kl: 0.0549 - val_loss: 0.7370 - val_recon: 0.6820
+Epoch 343/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8397 - val_kl: 0.0553 - val_loss: 0.7346 - val_recon: 0.6794
+Epoch 344/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8405 - val_kl: 0.0541 - val_loss: 0.7466 - val_recon: 0.6925
+Epoch 345/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8401 - val_kl: 0.0557 - val_loss: 0.7293 - val_recon: 0.6735
+Epoch 346/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8391 - val_kl: 0.0561 - val_loss: 0.7519 - val_recon: 0.6959
+Epoch 347/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8429 - val_kl: 0.0558 - val_loss: 0.7498 - val_recon: 0.6939
+Epoch 348/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8405 - val_kl: 0.0552 - val_loss: 0.7438 - val_recon: 0.6886
+Epoch 349/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8423 - val_kl: 0.0564 - val_loss: 0.7689 - val_recon: 0.7125
+Epoch 350/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8393 - val_kl: 0.0581 - val_loss: 0.7427 - val_recon: 0.6846
+Epoch 351/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8432 - val_kl: 0.0581 - val_loss: 0.7010 - val_recon: 0.6430
+Epoch 352/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8407 - val_kl: 0.0569 - val_loss: 0.7438 - val_recon: 0.6869
+Epoch 353/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8415 - val_kl: 0.0577 - val_loss: 0.7288 - val_recon: 0.6711
+Epoch 354/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8424 - val_kl: 0.0551 - val_loss: 0.7400 - val_recon: 0.6849
+Epoch 355/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8403 - val_kl: 0.0554 - val_loss: 0.7527 - val_recon: 0.6973
+Epoch 356/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8411 - val_kl: 0.0573 - val_loss: 0.7489 - val_recon: 0.6916
+Epoch 357/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8425 - val_kl: 0.0580 - val_loss: 0.7277 - val_recon: 0.6697
+Epoch 358/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8410 - val_kl: 0.0580 - val_loss: 0.7399 - val_recon: 0.6818
+Epoch 359/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8410 - val_kl: 0.0572 - val_loss: 0.7325 - val_recon: 0.6753
+Epoch 360/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8416 - val_kl: 0.0562 - val_loss: 0.7456 - val_recon: 0.6894
+Epoch 361/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8417 - val_kl: 0.0576 - val_loss: 0.7768 - val_recon: 0.7192
+Epoch 362/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8415 - val_kl: 0.0569 - val_loss: 0.7512 - val_recon: 0.6942
+Epoch 363/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8423 - val_kl: 0.0573 - val_loss: 0.7561 - val_recon: 0.6988
+Epoch 364/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8433 - val_kl: 0.0576 - val_loss: 0.7500 - val_recon: 0.6924
+Epoch 365/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8431 - val_kl: 0.0591 - val_loss: 0.7639 - val_recon: 0.7048
+Epoch 366/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8450 - val_kl: 0.0585 - val_loss: 0.7308 - val_recon: 0.6723
+Epoch 367/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8416 - val_kl: 0.0565 - val_loss: 0.7681 - val_recon: 0.7115
+Epoch 368/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8428 - val_kl: 0.0569 - val_loss: 0.7517 - val_recon: 0.6948
+Epoch 369/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8413 - val_kl: 0.0544 - val_loss: 0.7438 - val_recon: 0.6894
+Epoch 370/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8389 - val_kl: 0.0551 - val_loss: 0.7301 - val_recon: 0.6750
+Epoch 371/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8386 - val_kl: 0.0559 - val_loss: 0.7644 - val_recon: 0.7085
+Epoch 372/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8429 - val_kl: 0.0581 - val_loss: 0.7467 - val_recon: 0.6886
+Epoch 373/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8427 - val_kl: 0.0549 - val_loss: 0.7608 - val_recon: 0.7059
+Epoch 374/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8456 - val_kl: 0.0568 - val_loss: 0.7652 - val_recon: 0.7084
+Epoch 375/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8419 - val_kl: 0.0547 - val_loss: 0.7307 - val_recon: 0.6759
+Epoch 376/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8407 - val_kl: 0.0532 - val_loss: 0.7984 - val_recon: 0.7451
+Epoch 377/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8407 - val_kl: 0.0563 - val_loss: 0.7415 - val_recon: 0.6853
+Epoch 378/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8473 - val_kl: 0.0565 - val_loss: 0.7225 - val_recon: 0.6660
+Epoch 379/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8439 - val_kl: 0.0572 - val_loss: 0.7341 - val_recon: 0.6769
+Epoch 380/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8413 - val_kl: 0.0558 - val_loss: 0.7623 - val_recon: 0.7065
+Epoch 381/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8394 - val_kl: 0.0557 - val_loss: 0.7138 - val_recon: 0.6581
+Epoch 382/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8418 - val_kl: 0.0555 - val_loss: 0.7321 - val_recon: 0.6766
+Epoch 383/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8387 - val_kl: 0.0554 - val_loss: 0.7010 - val_recon: 0.6457
+Epoch 384/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8407 - val_kl: 0.0580 - val_loss: 0.7992 - val_recon: 0.7412
+Epoch 385/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8441 - val_kl: 0.0581 - val_loss: 0.7190 - val_recon: 0.6609
+Epoch 386/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8446 - val_kl: 0.0561 - val_loss: 0.7267 - val_recon: 0.6706
+Epoch 387/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8416 - val_kl: 0.0559 - val_loss: 0.7680 - val_recon: 0.7121
+Epoch 388/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8393 - val_kl: 0.0562 - val_loss: 0.7262 - val_recon: 0.6700
+Epoch 389/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8399 - val_kl: 0.0549 - val_loss: 0.7417 - val_recon: 0.6868
+Epoch 390/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8399 - val_kl: 0.0577 - val_loss: 0.7808 - val_recon: 0.7231
+Epoch 391/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8409 - val_kl: 0.0579 - val_loss: 0.7199 - val_recon: 0.6620
+Epoch 392/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8412 - val_kl: 0.0563 - val_loss: 0.7035 - val_recon: 0.6472
+Epoch 393/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8404 - val_kl: 0.0565 - val_loss: 0.7628 - val_recon: 0.7063
+Epoch 394/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8398 - val_kl: 0.0575 - val_loss: 0.7118 - val_recon: 0.6543
+Epoch 395/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8401 - val_kl: 0.0572 - val_loss: 0.7066 - val_recon: 0.6493
+Epoch 396/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8401 - val_kl: 0.0583 - val_loss: 0.7005 - val_recon: 0.6422
+Epoch 397/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8435 - val_kl: 0.0562 - val_loss: 0.7696 - val_recon: 0.7134
+Epoch 398/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8443 - val_kl: 0.0562 - val_loss: 0.7181 - val_recon: 0.6619
+Epoch 399/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8428 - val_kl: 0.0542 - val_loss: 0.7133 - val_recon: 0.6591
+Epoch 400/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8405 - val_kl: 0.0560 - val_loss: 0.7375 - val_recon: 0.6815
+Epoch 401/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8428 - val_kl: 0.0547 - val_loss: 0.7073 - val_recon: 0.6526
+Epoch 402/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8381 - val_kl: 0.0552 - val_loss: 0.7269 - val_recon: 0.6717
+Epoch 403/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8398 - val_kl: 0.0567 - val_loss: 0.7880 - val_recon: 0.7314
+Epoch 404/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8399 - val_kl: 0.0549 - val_loss: 0.7274 - val_recon: 0.6725
+Epoch 405/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8432 - val_kl: 0.0565 - val_loss: 0.7579 - val_recon: 0.7013
+Epoch 406/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8408 - val_kl: 0.0565 - val_loss: 0.7258 - val_recon: 0.6693
+Epoch 407/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8422 - val_kl: 0.0541 - val_loss: 0.7436 - val_recon: 0.6895
+Epoch 408/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8393 - val_kl: 0.0585 - val_loss: 0.7538 - val_recon: 0.6953
+Epoch 409/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 18ms/step - loss: 0.8409 - val_kl: 0.0558 - val_loss: 0.7402 - val_recon: 0.6844
+Epoch 410/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8401 - val_kl: 0.0557 - val_loss: 0.7601 - val_recon: 0.7044
+Epoch 411/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8430 - val_kl: 0.0560 - val_loss: 0.7577 - val_recon: 0.7017
+Epoch 412/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 28ms/step - loss: 0.8417 - val_kl: 0.0556 - val_loss: 0.7379 - val_recon: 0.6824
+Epoch 413/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 27ms/step - loss: 0.8389 - val_kl: 0.0570 - val_loss: 0.7145 - val_recon: 0.6575
+Epoch 414/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8418 - val_kl: 0.0566 - val_loss: 0.7462 - val_recon: 0.6896
+Epoch 415/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8367 - val_kl: 0.0539 - val_loss: 0.7360 - val_recon: 0.6821
+Epoch 416/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8387 - val_kl: 0.0564 - val_loss: 0.7599 - val_recon: 0.7035
+Epoch 417/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8424 - val_kl: 0.0584 - val_loss: 0.7463 - val_recon: 0.6879
+Epoch 418/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8423 - val_kl: 0.0556 - val_loss: 0.7491 - val_recon: 0.6935
+Epoch 419/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8390 - val_kl: 0.0543 - val_loss: 0.7547 - val_recon: 0.7004
+Epoch 420/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8414 - val_kl: 0.0576 - val_loss: 0.7312 - val_recon: 0.6737
+Epoch 421/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8397 - val_kl: 0.0551 - val_loss: 0.7287 - val_recon: 0.6736
+Epoch 422/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: 0.8378 - val_kl: 0.0560 - val_loss: 0.7332 - val_recon: 0.6772
+Epoch 423/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8420 - val_kl: 0.0579 - val_loss: 0.7396 - val_recon: 0.6817
+Epoch 424/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8423 - val_kl: 0.0556 - val_loss: 0.7372 - val_recon: 0.6816
+Epoch 425/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8399 - val_kl: 0.0564 - val_loss: 0.7266 - val_recon: 0.6702
+Epoch 426/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 20ms/step - loss: 0.8427 - val_kl: 0.0579 - val_loss: 0.7646 - val_recon: 0.7066
+Epoch 427/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8392 - val_kl: 0.0570 - val_loss: 0.7767 - val_recon: 0.7197
+Epoch 428/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8416 - val_kl: 0.0563 - val_loss: 0.7437 - val_recon: 0.6874
+Epoch 429/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8452 - val_kl: 0.0583 - val_loss: 0.7291 - val_recon: 0.6708
+Epoch 430/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 26ms/step - loss: 0.8427 - val_kl: 0.0569 - val_loss: 0.7390 - val_recon: 0.6821
+Epoch 431/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8398 - val_kl: 0.0573 - val_loss: 0.7279 - val_recon: 0.6706
+Epoch 432/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8374 - val_kl: 0.0548 - val_loss: 0.7706 - val_recon: 0.7158
+Epoch 433/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8392 - val_kl: 0.0582 - val_loss: 0.7289 - val_recon: 0.6707
+Epoch 434/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8437 - val_kl: 0.0573 - val_loss: 0.7402 - val_recon: 0.6828
+Epoch 435/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8394 - val_kl: 0.0544 - val_loss: 0.7329 - val_recon: 0.6785
+Epoch 436/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8396 - val_kl: 0.0561 - val_loss: 0.7508 - val_recon: 0.6947
+Epoch 437/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8461 - val_kl: 0.0558 - val_loss: 0.7428 - val_recon: 0.6869
+Epoch 438/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8438 - val_kl: 0.0570 - val_loss: 0.7607 - val_recon: 0.7037
+Epoch 439/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8393 - val_kl: 0.0564 - val_loss: 0.7291 - val_recon: 0.6727
+Epoch 440/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8432 - val_kl: 0.0545 - val_loss: 0.7593 - val_recon: 0.7048
+Epoch 441/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8412 - val_kl: 0.0567 - val_loss: 0.7066 - val_recon: 0.6499
+Epoch 442/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8441 - val_kl: 0.0577 - val_loss: 0.7464 - val_recon: 0.6887
+Epoch 443/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8424 - val_kl: 0.0549 - val_loss: 0.7272 - val_recon: 0.6723
+Epoch 444/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8411 - val_kl: 0.0555 - val_loss: 0.7746 - val_recon: 0.7191
+Epoch 445/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8454 - val_kl: 0.0560 - val_loss: 0.7462 - val_recon: 0.6902
+Epoch 446/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8468 - val_kl: 0.0563 - val_loss: 0.7257 - val_recon: 0.6694
+Epoch 447/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8404 - val_kl: 0.0548 - val_loss: 0.8047 - val_recon: 0.7499
+Epoch 448/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 29ms/step - loss: 0.8428 - val_kl: 0.0555 - val_loss: 0.7521 - val_recon: 0.6966
+Epoch 449/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8425 - val_kl: 0.0577 - val_loss: 0.7128 - val_recon: 0.6550
+Epoch 450/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8439 - val_kl: 0.0589 - val_loss: 0.7271 - val_recon: 0.6682
+Epoch 451/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8405 - val_kl: 0.0538 - val_loss: 0.7303 - val_recon: 0.6765
+Epoch 452/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8356 - val_kl: 0.0550 - val_loss: 0.7051 - val_recon: 0.6502
+Epoch 453/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8451 - val_kl: 0.0575 - val_loss: 0.7326 - val_recon: 0.6751
+Epoch 454/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8419 - val_kl: 0.0573 - val_loss: 0.7060 - val_recon: 0.6486
+Epoch 455/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8412 - val_kl: 0.0578 - val_loss: 0.7168 - val_recon: 0.6590
+Epoch 456/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8426 - val_kl: 0.0564 - val_loss: 0.7192 - val_recon: 0.6628
+Epoch 457/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8383 - val_kl: 0.0557 - val_loss: 0.7155 - val_recon: 0.6598
+Epoch 458/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8376 - val_kl: 0.0554 - val_loss: 0.7490 - val_recon: 0.6936
+Epoch 459/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8418 - val_kl: 0.0571 - val_loss: 0.7634 - val_recon: 0.7063
+Epoch 460/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8410 - val_kl: 0.0572 - val_loss: 0.7015 - val_recon: 0.6443
+Epoch 461/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8433 - val_kl: 0.0579 - val_loss: 0.7474 - val_recon: 0.6895
+Epoch 462/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8426 - val_kl: 0.0589 - val_loss: 0.7279 - val_recon: 0.6690
+Epoch 463/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8378 - val_kl: 0.0554 - val_loss: 0.7476 - val_recon: 0.6921
+Epoch 464/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8427 - val_kl: 0.0558 - val_loss: 0.7570 - val_recon: 0.7012
+Epoch 465/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8376 - val_kl: 0.0563 - val_loss: 0.7319 - val_recon: 0.6756
+Epoch 466/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8400 - val_kl: 0.0583 - val_loss: 0.7236 - val_recon: 0.6654
+Epoch 467/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8380 - val_kl: 0.0553 - val_loss: 0.7596 - val_recon: 0.7043
+Epoch 468/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8417 - val_kl: 0.0561 - val_loss: 0.7426 - val_recon: 0.6865
+Epoch 469/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8451 - val_kl: 0.0566 - val_loss: 0.7402 - val_recon: 0.6836
+Epoch 470/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8446 - val_kl: 0.0560 - val_loss: 0.7637 - val_recon: 0.7077
+Epoch 471/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8414 - val_kl: 0.0575 - val_loss: 0.7162 - val_recon: 0.6588
+Epoch 472/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8409 - val_kl: 0.0554 - val_loss: 0.7418 - val_recon: 0.6864
+Epoch 473/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8406 - val_kl: 0.0560 - val_loss: 0.7359 - val_recon: 0.6799
+Epoch 474/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8423 - val_kl: 0.0570 - val_loss: 0.7613 - val_recon: 0.7043
+Epoch 475/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8409 - val_kl: 0.0559 - val_loss: 0.7263 - val_recon: 0.6704
+Epoch 476/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8427 - val_kl: 0.0564 - val_loss: 0.7359 - val_recon: 0.6795
+Epoch 477/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8399 - val_kl: 0.0563 - val_loss: 0.7202 - val_recon: 0.6639
+Epoch 478/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8461 - val_kl: 0.0570 - val_loss: 0.7120 - val_recon: 0.6550
+Epoch 479/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8386 - val_kl: 0.0550 - val_loss: 0.7857 - val_recon: 0.7307
+Epoch 480/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8418 - val_kl: 0.0553 - val_loss: 0.7378 - val_recon: 0.6825
+Epoch 481/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 19ms/step - loss: 0.8422 - val_kl: 0.0560 - val_loss: 0.7602 - val_recon: 0.7042
+Epoch 482/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 17ms/step - loss: 0.8395 - val_kl: 0.0551 - val_loss: 0.7644 - val_recon: 0.7093
+Epoch 483/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8429 - val_kl: 0.0590 - val_loss: 0.7339 - val_recon: 0.6749
+Epoch 484/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8443 - val_kl: 0.0586 - val_loss: 0.7386 - val_recon: 0.6800
+Epoch 485/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8415 - val_kl: 0.0542 - val_loss: 0.7440 - val_recon: 0.6898
+Epoch 486/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8409 - val_kl: 0.0569 - val_loss: 0.7328 - val_recon: 0.6759
+Epoch 487/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8427 - val_kl: 0.0578 - val_loss: 0.6981 - val_recon: 0.6403
+Epoch 488/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8436 - val_kl: 0.0569 - val_loss: 0.7014 - val_recon: 0.6445
+Epoch 489/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 24ms/step - loss: 0.8412 - val_kl: 0.0576 - val_loss: 0.7136 - val_recon: 0.6559
+Epoch 490/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8412 - val_kl: 0.0563 - val_loss: 0.7198 - val_recon: 0.6635
+Epoch 491/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8392 - val_kl: 0.0566 - val_loss: 0.7403 - val_recon: 0.6837
+Epoch 492/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8437 - val_kl: 0.0584 - val_loss: 0.7149 - val_recon: 0.6564
+Epoch 493/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 25ms/step - loss: 0.8407 - val_kl: 0.0579 - val_loss: 0.7297 - val_recon: 0.6718
+Epoch 494/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8385 - val_kl: 0.0551 - val_loss: 0.7266 - val_recon: 0.6714
+Epoch 495/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8365 - val_kl: 0.0572 - val_loss: 0.7076 - val_recon: 0.6504
+Epoch 496/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8379 - val_kl: 0.0537 - val_loss: 0.7901 - val_recon: 0.7364
+Epoch 497/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8427 - val_kl: 0.0556 - val_loss: 0.7287 - val_recon: 0.6731
+Epoch 498/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 23ms/step - loss: 0.8406 - val_kl: 0.0568 - val_loss: 0.7476 - val_recon: 0.6908
+Epoch 499/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 22ms/step - loss: 0.8428 - val_kl: 0.0585 - val_loss: 0.7461 - val_recon: 0.6875
+Epoch 500/500
+29/29 ━━━━━━━━━━━━━━━━━━━━ 1s 21ms/step - loss: 0.8412 - val_kl: 0.0579 - val_loss: 0.7302 - val_recon: 0.6723
+noise emission sigma:  0.47617444
+Reconstruction loss:  0.68215644
+KL loss:              1.483588
+Total loss:           2.1657443
 --- Finished train.py ---
 
 --- Running generate.py ---
-2025-06-08 16:44:06.572144: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2025-06-09 17:44:19.255153: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
 WARNING:tensorflow:From C:\Users\lokes\anaconda3\Lib\site-packages\keras\src\backend\tensorflow\core.py:219: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
 
@@ -549,9 +878,9 @@ Model: "seasonal_prior"
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ input_layer_2 (InputLayer)    │ (None, None, 6)           │               0 │ -                          │
+│ input_layer_2 (InputLayer)    │ (None, None, 2)           │               0 │ -                          │
 ├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ dense (Dense)                 │ (None, None, 20)          │             120 │ input_layer_2[0][0]        │
+│ dense (Dense)                 │ (None, None, 20)          │              40 │ input_layer_2[0][0]        │
 ├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
 │ get_item_2 (GetItem)          │ (None, None, 10)          │               0 │ dense[0][0]                │
 ├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
@@ -560,8 +889,8 @@ Model: "seasonal_prior"
 │ sampling_1 (Sampling)         │ (None, None, 10)          │               0 │ get_item_2[0][0],          │
 │                               │                           │                 │ get_item_3[0][0]           │
 └───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
- Total params: 120 (480.00 B)
- Trainable params: 120 (480.00 B)
+ Total params: 40 (160.00 B)
+ Trainable params: 40 (160.00 B)
  Non-trainable params: 0 (0.00 B)
 Succesfully generated time series of length: 447065
 --- Finished generate.py ---
@@ -574,17 +903,16 @@ Succesfully generated time series of length: 447065
 1970-01-01 04:00:00   -0.291138
 Name: Observed, dtype: float64
 time
-1970-01-01 00:00:00    14.476311
-1970-01-01 01:00:00    13.858757
-1970-01-01 02:00:00    13.038679
-1970-01-01 03:00:00    11.996320
-1970-01-01 04:00:00    11.798944
+1970-01-01 00:00:00    9.572377
+1970-01-01 01:00:00    8.747197
+1970-01-01 02:00:00    7.341268
+1970-01-01 03:00:00    5.710965
+1970-01-01 04:00:00    5.508572
 Name: temperature, dtype: float64
 --- Finished plots.py ---
-(base) PS C:\Users\lokes\Desktop\circadian_rhythms\david_kyle_vae_model> python .\analysis.py
 
 --- Running latent.py ---
-2025-06-08 16:56:13.120380: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2025-06-09 17:44:34.239020: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
 WARNING:tensorflow:From C:\Users\lokes\anaconda3\Lib\site-packages\keras\src\backend\tensorflow\core.py:219: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
 
@@ -645,9 +973,9 @@ Model: "seasonal_prior"
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ Layer (type)                  ┃ Output Shape              ┃         Param # ┃ Connected to               ┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ input_layer_2 (InputLayer)    │ (None, None, 6)           │               0 │ -                          │
+│ input_layer_2 (InputLayer)    │ (None, None, 2)           │               0 │ -                          │
 ├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
-│ dense (Dense)                 │ (None, None, 20)          │             120 │ input_layer_2[0][0]        │
+│ dense (Dense)                 │ (None, None, 20)          │              40 │ input_layer_2[0][0]        │
 ├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
 │ get_item_2 (GetItem)          │ (None, None, 10)          │               0 │ dense[0][0]                │
 ├───────────────────────────────┼───────────────────────────┼─────────────────┼────────────────────────────┤
@@ -656,8 +984,8 @@ Model: "seasonal_prior"
 │ sampling_1 (Sampling)         │ (None, None, 10)          │               0 │ get_item_2[0][0],          │
 │                               │                           │                 │ get_item_3[0][0]           │
 └───────────────────────────────┴───────────────────────────┴─────────────────┴────────────────────────────┘
- Total params: 120 (480.00 B)
- Trainable params: 120 (480.00 B)
+ Total params: 40 (160.00 B)
+ Trainable params: 40 (160.00 B)
  Non-trainable params: 0 (0.00 B)
 --- Finished latent.py ---
 

@@ -11,7 +11,7 @@ def get_config():
     parser.add_argument('--latent_dim', type=int, default=None, help='Latent dimension')
     parser.add_argument('--latent_filter', type=int, default=10, help='Latent filter')
     parser.add_argument('--interim_filters', type=int, default=20, help='Interim filters')
-    parser.add_argument('--epochs', type=int, default=200, help='Number of epochs')
+    parser.add_argument('--epochs', type=int, default=500, help='Number of epochs')
     args, _ = parser.parse_known_args()
     return args
 
