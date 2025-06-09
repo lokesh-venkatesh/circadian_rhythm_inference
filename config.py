@@ -6,7 +6,7 @@ import argparse
 def get_config():
     parser = argparse.ArgumentParser(description="VAE Model Configuration")
     parser.add_argument('--input_size', type=int, default=64*24, help='Dimensions of the input data')
-    parser.add_argument('--degree', type=int, default=3, help='Degree of fourier series for seasonal inputs')
+    parser.add_argument('--degree', type=int, default=1, help='Degree of fourier series for seasonal inputs')
     parser.add_argument('--latent_size', type=int, default=4*24, help='The hours associated with each latent variable')
     parser.add_argument('--latent_dim', type=int, default=None, help='Latent dimension')
     parser.add_argument('--latent_filter', type=int, default=10, help='Latent filter')
@@ -35,6 +35,8 @@ batch_size = 32
 
 if __name__=="__main__":
     scripts = ["data.py", "train.py", "generate.py", "plots.py"]
+    scripts.extend(["latent.py","analysis_scripts/flatten_pca_day_of_year.py","analysis_scripts/flatten_pca_temp.py",
+        "analysis_scripts/flatten_tsne_day_of_year.py","analysis_scripts/flatten_tsne_temp.py"])
     for script in scripts:
         print(f"\n--- Running {script} ---")
         # Suppress Python warnings and set environment variable to ignore warnings in subprocess

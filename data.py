@@ -50,6 +50,49 @@ plt.legend()
 plt.savefig('images/long_term_trend.png', dpi=300)
 plt.close()
 
+'''
+# now we want to get rid of the 'annual periodicity' in the data
+# and ensure that only the daily periodicity remains
+# we do this by first calculating the weekly average across all years, 
+# and then subtracting it from the climate adjusted data
+# this will remove the weekly periodicity and leave us with the daily periodicity
+df_weekly = df_mst.resample('W').mean()
+# Calculate the rolling mean with a window of 7 days
+df_weekly['Rolling Mean'] = df_weekly['Climate Adjusted'].rolling(window=7, center=True).mean()
+# Subtract the rolling mean from the climate adjusted data
+df_mst['Climate Adjusted'] = df_mst['Climate Adjusted'] - df_weekly['Rolling Mean'].reindex(df_mst.index, method='ffill')'''
+
+# Compute the week number for each timestamp
+df_mst['weekofyear'] = df_mst.index.isocalendar().week
+
+# Ensure the week number doesn't exceed 52 (optional cleanup)
+# df_mst = df_mst[df_mst['weekofyear'] <= 52]
+
+# Group by week number and compute climatological weekly averages
+weekly_climatology = df_mst.groupby('weekofyear')['Observed'].mean()
+
+# Map each timestamp to the corresponding weekly climatological mean
+df_mst['Weekly Mean'] = df_mst['weekofyear'].map(weekly_climatology)
+
+# Subtract the seasonal cycle
+df_mst['Deseasonalized'] = df_mst['Observed'] - df_mst['Weekly Mean']
+
+# Plot average of deseasonalized data by week
+df_mst['Deseasonalized'].groupby(df_mst['weekofyear']).mean().plot()
+plt.title("Weekly Averages After Deseasonalization")
+plt.xlabel("Week of Year")
+plt.ylabel("Temperature Anomaly (°C)")
+plt.grid()
+plt.savefig('images/seasonal_flattened.png', dpi=300)
+plt.close()
+
+df_mst = df_mst.drop(columns=['Climate Adjusted', 'Weekly Mean', 'weekofyear'])
+print(df_mst.head())
+df_mst = df_mst.rename(columns={'Deseasonalized': 'Climate Adjusted'})
+print(df_mst.head())
+
+# Save the processed data
+#df_mst = df_mst.dropna() # need to remove NaN values after rolling mean (since rolling mean creates NaN at the edges!!!)
 df_mst.to_csv('data/processed/observed_time_series.csv')
 
 offset = round(df_mst['Climate Adjusted'].mean(), 8)

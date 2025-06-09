@@ -32,6 +32,10 @@ def kl_divergence_sum(mu1 = 0.0, log_var1 = 0.0, mu2 = 0.0, log_var2 = 0.0):
     axis0 = 0.5*tf.reduce_mean(log_var2 - log_var1 + (var1 + (mu1 - mu2)**2) / var2 - 1, axis=0)
     return tf.reduce_sum(axis0)
 
+def kl_divergence_standard_normal(mean, log_var):
+    """KL divergence between N(mean, var) and N(0, 1)."""
+    return -0.5 * tf.reduce_sum(1 + log_var - tf.square(mean) - tf.exp(log_var))
+
 def log_lik_normal_sum(x, mu=0.0, log_var = 0.0):
     axis0 = -0.5*(tf.math.log(2*np.pi) + tf.reduce_mean(log_var + (x - mu) ** 2 * tf.exp(-log_var), axis=0))
     return tf.reduce_sum(axis0)
