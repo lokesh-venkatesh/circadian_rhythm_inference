@@ -108,6 +108,20 @@ gen_series = gen_series.rename('temperature')
 gen_series = gen_series.to_frame()
 gen_series.index.name = 'time'
 
+# Add back seasonal cycle
+# Load original observed time series to get weekly climatology
+df_obs = pd.read_csv('data/processed/observed_time_series.csv', index_col=0, parse_dates=True)
+df_obs['weekofyear'] = df_obs.index.isocalendar().week
+weekly_climatology = df_obs.groupby('weekofyear')['Observed'].mean()
+
+# Map each hour in generated time series to its weekly mean
+week_numbers = gen_series.index.isocalendar().week
+seasonal_cycle = np.array([weekly_climatology[w] for w in week_numbers])
+gen_series['temperature'] += seasonal_cycle
+
 gen_series.to_csv('data/processed/generated.csv')
 
 print(f"Succesfully generated time series of length: {len(gen_series.iloc[:,0])}")
+
+gen_series['temperature'].resample('M').mean().plot(title='Monthly Mean of Generated Series')
+plt.savefig('images/generated_monthly_avg.png', dpi=300)

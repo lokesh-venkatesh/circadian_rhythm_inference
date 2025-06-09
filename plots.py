@@ -10,17 +10,20 @@ os.makedirs('images', exist_ok=True)
 raw_data = pd.read_csv("data/processed/observed_time_series.csv", index_col=0, parse_dates=True).squeeze()
 gen_data = pd.read_csv("data/processed/generated.csv", index_col=0, parse_dates=True).squeeze()
 
-if 'Climate Adjusted' in raw_data.columns:
-    raw_data = raw_data.drop(columns=['Climate Adjusted'])
-
-if isinstance(raw_data, pd.DataFrame): raw_data = raw_data.squeeze()
-if isinstance(gen_data, pd.DataFrame): gen_data = gen_data.squeeze()
+# Ensure both are pandas Series
+if isinstance(raw_data, pd.DataFrame):
+    raw_data = raw_data.iloc[:, 0]
+if isinstance(gen_data, pd.DataFrame):
+    gen_data = gen_data.iloc[:, 0]
 
 print(raw_data.head())
 print(gen_data.head())
 
 raw_data.index.name = None
-df = pd.DataFrame({'Real': raw_data.values, 'Generated': gen_data.values}, index=raw_data.index)
+gen_data.index.name = None
+
+# Align indices in case they differ
+df = pd.DataFrame({'Real': raw_data, 'Generated': gen_data}).dropna()
 
 def autocorrelation(x):
     slope = np.polyfit(x[:-1], x[1:], 1)[0]
@@ -69,19 +72,15 @@ ax2.set_ylabel('Hourly Average (°C)')
 ax2.set_xlabel('Hour')
 
 # Plot last two weeks of hourly data
-df.iloc[-24*28:].plot(ax=ax3, title='Last Two Weeks of Hourly Data')
-# set y-axis label
+df.iloc[-24*14:].plot(ax=ax3, title='Last Two Weeks of Hourly Data')
 ax3.set_ylabel('Hourly Temperature (°C)')
 
 # Plot the last year of daily averages
 df.resample('D').mean().iloc[-365:].plot(ax=ax4, title='Last Year of Daily Averages')
-# set y-axis label
 ax4.set_ylabel('Daily Average (°C)')
 
 # Plot correlation
-# ax5.bar(corr_df.index, corr_df)
 corr_df.plot(kind='bar', ax=ax5)
-# set y-axis label
 ax5.set_ylabel('Correlation Coefficient')
 ax5.set_title('Auto-Correlation')
 for i, value in enumerate(corr_df['Real']):
@@ -89,11 +88,10 @@ for i, value in enumerate(corr_df['Real']):
 for i, value in enumerate(corr_df['Generated']):
     ax5.text(i+0.01, value, f'{value:.3f}', ha='left', va='bottom')
 
-plt.ylim(bottom=0, top=1.07)
+ax5.set_ylim(bottom=0, top=1.07)
 
 fig.suptitle('Plots of Observed Versus Generated Temperature Data', fontsize=16)
 
 plt.tight_layout()
 plt.savefig('images/seasonal_diurnal_correlation_with_gen.png', dpi=300)
 plt.close()
-
