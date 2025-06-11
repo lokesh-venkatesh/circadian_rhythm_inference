@@ -71,6 +71,61 @@ plt.grid()
 plt.savefig('images/seasonal_flattened.png', dpi=300)
 plt.close()
 
+# --- Begin new plotting block for all four stages as individual plots (last 2 years only) ---
+
+# Define the time window: last 2 years
+last_2_years = df_mst.index >= (df_mst.index.max() - pd.DateOffset(years=2))
+
+# 1. Original (Observed)
+plt.figure(figsize=(10, 4))
+plt.plot(df_mst.index[last_2_years], df_mst['Observed'][last_2_years], color='tab:blue')
+plt.title('Original (Observed) - Last 2 Years')
+plt.ylabel('Temperature (°C)')
+plt.xlabel('Date')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('images/original_observed_last2years.png', dpi=300)
+plt.close()
+
+# 2. After Climate Adjustment
+plt.figure(figsize=(10, 4))
+plt.plot(df_mst.index[last_2_years], df_mst['Climate Adjusted'][last_2_years], color='tab:orange')
+plt.title('After Climate Adjustment - Last 2 Years')
+plt.ylabel('Temperature (°C)')
+plt.xlabel('Date')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('images/climate_adjusted_last2years.png', dpi=300)
+plt.close()
+
+# 3. After Deseasonalisation
+plt.figure(figsize=(10, 4))
+plt.plot(df_mst.index[last_2_years], df_mst['Deseasonalized'][last_2_years], color='tab:green')
+plt.title('After Deseasonalisation - Last 2 Years')
+plt.ylabel('Temperature Anomaly (°C)')
+plt.xlabel('Date')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('images/deseasonalized_last2years.png', dpi=300)
+plt.close()
+
+# 4. After Normalisation
+deseasonalized = df_mst['Deseasonalized']
+offset = round(deseasonalized.mean(), 8)
+scale = round(deseasonalized.std(), 8)
+normalised = (deseasonalized - offset) / scale
+
+plt.figure(figsize=(10, 4))
+plt.plot(df_mst.index[last_2_years], normalised[last_2_years], color='tab:red')
+plt.title('After Normalisation - Last 2 Years')
+plt.ylabel('Normalised Value')
+plt.xlabel('Date')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('images/normalised_last2years.png', dpi=300)
+plt.close()
+# --- End new plotting block ---
+
 df_mst = df_mst.drop(columns=['Climate Adjusted', 'Weekly Mean', 'weekofyear'])
 print(df_mst.head())
 df_mst = df_mst.rename(columns={'Deseasonalized': 'Climate Adjusted'})
@@ -100,16 +155,27 @@ total_hours = len(values)
 X = []
 index = []
 
-for start in range(0, total_hours - window_size + 1, hop_size):
-    end = start + window_size
-    X.append(values[start:end])
-    index.append(timestamps[start])  # Save the timestamp of the first hour of the chunk
+while True:
+    # Random phase shift between -12 and +12 hours
+    phase_shift = np.random.randint(-12, 13) # replace with phase_shift = 0
+    start = len(X) * hop_size
+    shifted_start = start + phase_shift
+    # Ensure shifted_start is within valid range
+    shifted_start = max(0, min(shifted_start, total_hours - window_size))
+    end = shifted_start + window_size
+    if end > total_hours:
+        break
+    X.append(values[shifted_start:end])
+    index.append(timestamps[shifted_start])
+    if end == total_hours:
+        break
 
-X = np.array(X)  # Shape: (num_chunks, 1536)
+X = np.array(X)  # Shape: (num_chunks, window_size)
 index = pd.to_datetime(index)
 
 # Create DataFrame with timestamp index
 dft_reshaped = pd.DataFrame(data=X, index=index)
+
 # Keep only rows where the index month is January
 # dft_reshaped = dft_reshaped[dft_reshaped.index.month.isin([1])]
 
