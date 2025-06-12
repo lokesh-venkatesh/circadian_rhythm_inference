@@ -1,4 +1,3 @@
-# import libraries
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -15,6 +14,7 @@ set_seed()
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
 if prior_dist_type == 'Normal':
+    print("Generating time series with Normal prior...")
     encoder = build_encoder()
     decoder = build_decoder()
     seasonal_prior = build_seasonal_prior()
@@ -50,15 +50,17 @@ if prior_dist_type == 'Normal':
 
     plt.savefig("images/encoded_log_variance.png", dpi=300)
 
-    dt = pd.date_range(start=gnrt_start, end=gnrt_end, freq='h')
+    start_dat = gnrt_start
+    end_dat = gnrt_end
+    dt = pd.date_range(start=start_dat, end=end_dat, freq='h')
 
     n_latents = int(np.ceil(len(dt) / LATENT_SIZE))
     z_gen = np.random.normal(size=(1, n_latents, latent_filter)).astype(np.float32)
     gen_mean = decoder(z_gen).numpy()
 
-    # Add noise (optional, commented out)
+    # Add noise
     noise = np.random.normal(size=gen_mean.shape) * np.exp(0.5 * vae.noise_log_var[0].numpy())
-    gen = gen_mean  # without noise
+    gen = gen_mean + noise
 
     data_params = pd.read_csv('data/data_params.csv', index_col=0)
     offset = data_params.loc['offset', 'values']
@@ -83,6 +85,7 @@ if prior_dist_type == 'Normal':
     print(f"Succesfully generated time series of length: {len(gen_series.iloc[:,0])}")
 
 elif prior_dist_type == 'Seasonal':
+    print("Generating time series with Seasonal prior...")
     # Fourier features
     fourier = lambda x: np.stack(
         [np.sin(2*np.pi*i*x) for i in range(1, DEGREE+1)] + 
@@ -130,13 +133,15 @@ elif prior_dist_type == 'Seasonal':
 
     plt.savefig("images/encoded_log_variance.png", dpi=300)
 
-    dt = pd.date_range(start=gnrt_start, end=gnrt_end, freq='h')
+    start_dat = gnrt_start
+    end_dat = gnrt_end
+    dt = pd.date_range(start=start_dat, end=end_dat, freq='h')
 
     gen_seasonal_inputs = fourier((dt.dayofyear[::LATENT_SIZE])/365)[np.newaxis]
     _, _, z_gen = seasonal_prior(gen_seasonal_inputs)
     gen_mean = decoder(z_gen).numpy()
     noise = np.random.normal(size=gen_mean.shape)*np.exp(0.5*vae.noise_log_var[0].numpy())
-    gen = gen_mean  # without noise
+    gen = gen_mean + noise
 
     data_params = pd.read_csv('data/data_params.csv', index_col=0)
     offset = data_params.loc['offset', 'values']
@@ -156,7 +161,7 @@ elif prior_dist_type == 'Seasonal':
     seasonal_cycle = np.array([weekly_climatology[w] for w in week_numbers])
     gen_series['temperature'] += seasonal_cycle
 
-    gen_series.to_csv('data/processed/generated.csv')
+    gen_series.to_csv('data/processed/generated_time_series.csv')
 
     print(f"Succesfully generated time series of length: {len(gen_series.iloc[:,0])}")
 

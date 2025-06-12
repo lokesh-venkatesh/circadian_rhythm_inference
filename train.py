@@ -15,6 +15,7 @@ os.makedirs('model', exist_ok=True)
 data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
 if prior_dist_type=='Seasonal':
+    print('Training VAE with Seasonal prior distribution...')
     fourier = lambda x: np.stack(
         [np.sin(2*np.pi*i*x) for i in range(1, DEGREE+1)] + 
         [np.cos(2*np.pi*i*x) for i in range(1, DEGREE+1)], axis=-1)
@@ -48,9 +49,7 @@ if prior_dist_type=='Seasonal':
         train_tensor, train_seasonal_tensor, 
         epochs=epochs,
         batch_size=batch_size,
-        validation_data=(test_tensor, test_seasonal_tensor),
-    )
-
+        validation_data=(test_tensor, test_seasonal_tensor),)
 
     # Save model weights
     _ = vae(train_tensor[:1])  # Call model once to build it
@@ -81,6 +80,7 @@ if prior_dist_type=='Seasonal':
 
 
 elif prior_dist_type=='Normal':
+    print('Training VAE with Normal prior distribution...')
     training_ratio = 0.8
     train = data.values[:int(len(data)*training_ratio)]
     test = data.values[int(len(data)*training_ratio):]
@@ -100,9 +100,7 @@ elif prior_dist_type=='Normal':
         train_tensor, 
         epochs=epochs,
         batch_size=batch_size,
-        validation_data=(test_tensor, ),
-    )
-
+        validation_data=(test_tensor, ),)
 
     # Save model weights
     _ = vae(train_tensor[:1])  # Call model once to build it
