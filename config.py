@@ -40,6 +40,8 @@ epochs = args.epochs
 batch_size = 32
 prior_dist_type = args.prior_dist_type
 activate_phase_shift = args.activate_phase_shift
+
+os.mkdir('results', exist_ok=True)
 results_directory = f'results/training_run_{prior_dist_type}_prior_{activate_phase_shift}_phase_shift_{epochs}_epochs'
 
 if __name__=="__main__":
