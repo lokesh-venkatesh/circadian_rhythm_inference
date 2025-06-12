@@ -10,7 +10,7 @@ from utils import set_seed
 from config import *
 
 set_seed()
-data = pd.read_csv('data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
+data = pd.read_csv('C:/Users/lokes/Desktop/circadian_rhythms/david_kyle_vae_model/data/processed/phoenix_64days.csv', index_col=0, parse_dates=True)
 
 fourier = lambda x: np.stack(
     [np.sin(2*np.pi*i*x) for i in range(1, DEGREE+1)] + 

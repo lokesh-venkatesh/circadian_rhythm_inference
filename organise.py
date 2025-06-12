@@ -10,6 +10,7 @@ folders_to_move = [
 ]
 
 files_to_move = [
+    'logs.txt',
     os.path.join('data', 'data_params.csv'),
     os.path.join('data', 'train_summary.csv')
 ]

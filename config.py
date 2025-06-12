@@ -11,7 +11,7 @@ def get_config():
     parser.add_argument('--latent_dim', type=int, default=None, help='Latent dimension')
     parser.add_argument('--latent_filter', type=int, default=10, help='Latent filter')
     parser.add_argument('--interim_filters', type=int, default=20, help='Interim filters')
-    parser.add_argument('--epochs', type=int, default=200, help='Number of epochs')
+    parser.add_argument('--epochs', type=int, default=100, help='Number of epochs')
     parser.add_argument('--prior_dist_type', type=str, default='Seasonal', help='Prior Distribution type') # NOTE IMP!
     parser.add_argument('--activate_phase_shift', type=bool, default=False, help='Randomly shift input phases') # NOTE IMP!
     parser.add_argument('--gnrt_start', type=str, default='1970-01-01 00:00:00', help='Timestamp generation starts from')
@@ -49,14 +49,26 @@ if __name__=="__main__":
                "train.py", 
                "generate.py", 
                "plot.py", 
-               "latent", 
+               "latent.py", 
                "latent_space_megaplot.py",
                "organise.py"]
+    all_logs = []
     for script in scripts:
-        print(f"\n--- Running {script} ---")
-        # Suppress Python warnings and set environment variable to ignore warnings in subprocess
+        all_logs.append(f"\n--- Running {script} ---\n")
         env = os.environ.copy()
         env["PYTHONWARNINGS"] = "ignore"
-        # Pass the same arguments to the subprocess
-        subprocess.run([sys.executable, script] + sys.argv[1:], env=env)
-        print(f"--- Finished {script} ---")
+        # Capture stdout and stderr
+        result = subprocess.run(
+            [sys.executable, script] + sys.argv[1:],
+            env=env,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True
+        )
+        all_logs.append(result.stdout)
+        all_logs.append(f"--- Finished {script} ---\n")
+    # Save all logs to logs.txt
+    with open("logs.txt", "w", encoding="utf-8") as f:
+        f.writelines(all_logs)
+    # Also print to terminal
+    print(''.join(all_logs))
