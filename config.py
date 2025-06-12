@@ -52,23 +52,30 @@ if __name__=="__main__":
                "latent.py", 
                "latent_space_megaplot.py",
                "organise.py"]
-    all_logs = []
-    for script in scripts:
-        print(f"\n--- Running {script} ---")
-        all_logs.append(f"\n--- Running {script} ---\n")
-        env = os.environ.copy()
-        env["PYTHONWARNINGS"] = "ignore"
-        # Capture stdout and stderr
-        result = subprocess.run(
-            [sys.executable, script] + sys.argv[1:],
-            env=env,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True
-        )
-        all_logs.append(result.stdout)
-        all_logs.append(f"--- Finished {script} ---\n")
-        print(f"--- Finished {script} ---")
-    # Save all logs to logs.txt
-    with open("logs.txt", "w", encoding="utf-8") as f:
-        f.writelines(all_logs)
+    log_path = "data/logs.txt"
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        for script in scripts:
+            header = f"\n--- Running {script} ---\n"
+            print(header, end="")
+            log_file.write(header)
+            log_file.flush()
+            env = os.environ.copy()
+            env["PYTHONWARNINGS"] = "ignore"
+            process = subprocess.Popen(
+                [sys.executable, script] + sys.argv[1:],
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+            for line in process.stdout:
+                print(line, end="")
+                log_file.write(line)
+                log_file.flush()
+            process.wait()
+            footer = f"--- Finished {script} ---\n"
+            print(footer, end="")
+            log_file.write(footer)
+            log_file.flush()
