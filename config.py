@@ -12,14 +12,10 @@ def get_config():
     parser.add_argument('--latent_filter', type=int, default=10, help='Latent filter')
     parser.add_argument('--interim_filters', type=int, default=20, help='Interim filters')
     parser.add_argument('--epochs', type=int, default=500, help='Number of epochs')
-    parser.add_argument('--prior_dist_type', type=str, default='Normal', help='Prior Distribution type')
-    # NOTE IMP!
-    parser.add_argument('--activate_phase_shift', type=bool, default=True, help='Randomly shift input phases')
-    # NOTE IMP!
+    parser.add_argument('--prior_dist_type', type=str, default='Normal', help='Prior Distribution type') # NOTE IMP!
+    parser.add_argument('--activate_phase_shift', type=bool, default=True, help='Randomly shift input phases') # NOTE IMP!
     parser.add_argument('--gnrt_start', type=str, default='1970-01-01 00:00:00', help='Timestamp generation starts from')
     parser.add_argument('--gnrt_end', type=str, default='2020-12-31 16:00:00', help='Timestamp generation ends at')
-    parser.add_argument('--results_directory', type=str, default='results_normal_prior_true_phase_shift', help='Folder to shift all run files to')
-    # NOTE IMP!
     args, _ = parser.parse_known_args()
     return args
 
@@ -44,7 +40,7 @@ epochs = args.epochs
 batch_size = 32
 prior_dist_type = args.prior_dist_type
 activate_phase_shift = args.activate_phase_shift
-results_directory = args.results_directory
+results_directory = f'results_{prior_dist_type}_prior_{activate_phase_shift}_phase_shift_{epochs}_epochs'
 
 if __name__=="__main__":
     scripts = ["data.py", 
