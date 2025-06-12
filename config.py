@@ -54,6 +54,7 @@ if __name__=="__main__":
                "organise.py"]
     all_logs = []
     for script in scripts:
+        print(f"\n--- Running {script} ---")
         all_logs.append(f"\n--- Running {script} ---\n")
         env = os.environ.copy()
         env["PYTHONWARNINGS"] = "ignore"
@@ -67,8 +68,7 @@ if __name__=="__main__":
         )
         all_logs.append(result.stdout)
         all_logs.append(f"--- Finished {script} ---\n")
+        print(f"--- Finished {script} ---")
     # Save all logs to logs.txt
     with open("logs.txt", "w", encoding="utf-8") as f:
         f.writelines(all_logs)
-    # Also print to terminal
-    print(''.join(all_logs))
