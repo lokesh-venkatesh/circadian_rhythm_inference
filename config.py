@@ -2,6 +2,7 @@ import subprocess
 import os
 import sys
 import argparse
+import shutil
 
 def get_config():
     parser = argparse.ArgumentParser(description="VAE Model Configuration")
@@ -79,3 +80,9 @@ if __name__=="__main__":
             print(footer, end="")
             log_file.write(footer)
             log_file.flush()
+    
+    # Delete __pycache__ folder if it exists
+    pycache_folder = '__pycache__'
+    if os.path.isdir(pycache_folder):
+        shutil.rmtree(pycache_folder)
+        print(f"Deleted folder '{pycache_folder}'")

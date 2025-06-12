@@ -1,6 +1,6 @@
 import os
-import shutil
 from config import results_directory
+import shutil
 
 # Define paths
 folders_to_move = [
@@ -35,9 +35,3 @@ for file in files_to_move:
         print(f"Moved file '{file}' to '{dest_file}'")
     else:
         print(f"File not found: {file}")
-
-# Delete __pycache__ folder if it exists
-pycache_folder = '__pycache__'
-if os.path.isdir(pycache_folder):
-    shutil.rmtree(pycache_folder)
-    print(f"Deleted folder '{pycache_folder}'")
