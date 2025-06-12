@@ -53,7 +53,7 @@ if __name__=="__main__":
                "latent.py", 
                "latent_space_megaplot.py",
                "organise.py"]
-    log_path = "data/logs.txt"
+    log_path = f"{results_directory}/logs.txt"
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
     with open(log_path, "w", encoding="utf-8") as log_file:
         for script in scripts:
