@@ -8,7 +8,7 @@ import os
 os.makedirs('images', exist_ok=True)
 
 raw_data = pd.read_csv("data/processed/observed_time_series.csv", index_col=0, parse_dates=True).squeeze()
-gen_data = pd.read_csv("data/processed/generated.csv", index_col=0, parse_dates=True).squeeze()
+gen_data = pd.read_csv("data/processed/generated_time_series.csv", index_col=0, parse_dates=True).squeeze()
 
 # Ensure both are pandas Series
 if isinstance(raw_data, pd.DataFrame):
@@ -93,5 +93,5 @@ ax5.set_ylim(bottom=0, top=1.07)
 fig.suptitle('Plots of Observed Versus Generated Temperature Data', fontsize=16)
 
 plt.tight_layout()
-plt.savefig('images/seasonal_diurnal_correlation_with_gen.png', dpi=300)
+plt.savefig('images/seasonal_diurnal_correlations.png', dpi=300)
 plt.close()

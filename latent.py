@@ -20,8 +20,10 @@ fourier = lambda x: np.stack(
 encoder = build_encoder()
 decoder = build_decoder()
 seasonal_prior = build_seasonal_prior()
-vae = VAE(encoder=encoder, decoder=decoder, prior=seasonal_prior)
-# optimizer = Adam(learning_rate=learning_rate)
+if prior_dist_type=='Normal':
+    vae = VAE(encoder=encoder, decoder=decoder, prior_dist_type=prior_dist_type)
+elif prior_dist_type=='Seasonal':
+    vae = VAE(encoder=encoder, decoder=decoder, prior=seasonal_prior, prior_dist_type=prior_dist_type)
 vae.compile()
 
 starting_day = np.array(data.index.dayofyear)[:, np.newaxis] - 1

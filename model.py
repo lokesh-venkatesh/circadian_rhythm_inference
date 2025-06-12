@@ -49,24 +49,34 @@ def build_seasonal_prior():
     return seasonal_prior
 
 class VAE(models.Model):
-    def __init__(self, encoder, decoder, prior=None, **kwargs):
+    def __init__(self, encoder, decoder, prior_dist_type, prior=None, **kwargs):
         super(VAE, self).__init__(**kwargs)
         self.encoder = encoder
         self.decoder = decoder
-        # self.prior = prior # NOTE COMMENT THIS LINE OUT IF NO SEASONAL PRIOR IS USED
+        self.prior = prior
+        self.prior_dist_type = prior_dist_type
         self.noise_log_var = self.add_weight(name='var', shape=(1,), initializer='zeros', trainable=True)
 
     @tf.function
     def vae_loss(self, data):
-        # values, seasonal = data # NOTE COMMENT THIS LINE OUT IF NO SEASONAL PRIOR IS USED
-        values = data  # Use only values if no seasonal prior is used
-        z_mean, z_log_var, z = self.encoder(values)
-        reconstructed = self.decoder(z)
-        reconstruction_loss = -log_lik_normal_sum(values, reconstructed, self.noise_log_var)/INPUT_SIZE
-        # seasonal_z_mean, seasonal_z_log_var, _ = self.prior(seasonal) # NOTE COMMENT THIS LINE OUT IF NO SEASONAL PRIOR IS USED
-        # kl_loss_z = kl_divergence_sum(z_mean, z_log_var, seasonal_z_mean, seasonal_z_log_var)/INPUT_SIZE # NOTE COMMENT THIS LINE OUT IF NO SEASONAL PRIOR IS USED
-        kl_loss_z = kl_divergence_standard_normal(z_mean, z_log_var) / INPUT_SIZE # Standard normal prior: mean=0, log_var=0 (=> std=1)
-        return reconstruction_loss, kl_loss_z
+        if self.prior_dist_type=='Normal':
+            values = data  # Use only values if no seasonal prior is used
+            z_mean, z_log_var, z = self.encoder(values)
+            reconstructed = self.decoder(z)
+            reconstruction_loss = -log_lik_normal_sum(values, reconstructed, self.noise_log_var)/INPUT_SIZE
+            kl_loss_z = kl_divergence_standard_normal(z_mean, z_log_var) / INPUT_SIZE 
+            return reconstruction_loss, kl_loss_z
+        
+        elif self.prior_dist_type=='Seasonal':
+            values, seasonal = data
+            z_mean, z_log_var, z = self.encoder(values)
+            reconstructed = self.decoder(z)
+            reconstruction_loss = -log_lik_normal_sum(values, reconstructed, self.noise_log_var)/INPUT_SIZE
+            seasonal_z_mean, seasonal_z_log_var, _ = self.prior(seasonal)
+            kl_loss_z = kl_divergence_sum(z_mean, z_log_var, seasonal_z_mean, seasonal_z_log_var)/INPUT_SIZE
+            kl_loss_z = kl_divergence_standard_normal(z_mean, z_log_var) / INPUT_SIZE 
+            # Standard normal prior: mean=0, log_var=0 (=> std=1)
+            return reconstruction_loss, kl_loss_z
 
     def train_step(self, data):
         with tf.GradientTape() as tape:

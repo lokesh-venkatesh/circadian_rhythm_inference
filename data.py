@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import os
 from utils import set_seed
-from config import INPUT_SIZE
+from config import INPUT_SIZE, activate_phase_shift, prior_dist_type
 
 os.makedirs('data/processed', exist_ok=True)
 os.makedirs('images', exist_ok=True)
@@ -50,64 +50,47 @@ plt.legend()
 plt.savefig('images/long_term_trend.png', dpi=300)
 plt.close()
 
-# Compute the week number for each timestamp
-df_mst['weekofyear'] = df_mst.index.isocalendar().week
+if not prior_dist_type=='Seasonal':
+    # Compute the week number for each timestamp
+    df_mst['weekofyear'] = df_mst.index.isocalendar().week
 
-# Group by week number and compute climatological weekly averages
-weekly_climatology = df_mst.groupby('weekofyear')['Observed'].mean()
+    # Group by week number and compute climatological weekly averages
+    weekly_climatology = df_mst.groupby('weekofyear')['Observed'].mean()
 
-# Map each timestamp to the corresponding weekly climatological mean
-df_mst['Weekly Mean'] = df_mst['weekofyear'].map(weekly_climatology)
+    # Map each timestamp to the corresponding weekly climatological mean
+    df_mst['Weekly Mean'] = df_mst['weekofyear'].map(weekly_climatology)
 
-# Subtract the seasonal cycle
-df_mst['Deseasonalized'] = df_mst['Observed'] - df_mst['Weekly Mean']
+    # Subtract the seasonal cycle
+    df_mst['Deseasonalized'] = df_mst['Observed'] - df_mst['Weekly Mean']
 
-# Plot average of deseasonalized data by week
-df_mst['Deseasonalized'].groupby(df_mst['weekofyear']).mean().plot()
-plt.title("Weekly Averages After Deseasonalization")
-plt.xlabel("Week of Year")
-plt.ylabel("Temperature Anomaly (°C)")
-plt.grid()
-plt.savefig('images/seasonal_flattened.png', dpi=300)
-plt.close()
+    # Plot average of deseasonalized data by week
+    df_mst['Deseasonalized'].groupby(df_mst['weekofyear']).mean().plot()
 
-# --- Begin new plotting block for all four stages as individual plots (last 2 years only) ---
+'''
+# --- Begin new plotting block for all four stages as subplots (last 10 years only) ---
 
-# Define the time window: last 2 years
-last_2_years = df_mst.index >= (df_mst.index.max() - pd.DateOffset(years=2))
+# Define the time window: last 10 years
+last_10_years = df_mst.index >= (df_mst.index.max() - pd.DateOffset(years=10))
+
+fig, axes = plt.subplots(4, 1, figsize=(28, 12), sharex=True)
 
 # 1. Original (Observed)
-plt.figure(figsize=(10, 4))
-plt.plot(df_mst.index[last_2_years], df_mst['Observed'][last_2_years], color='tab:blue')
-plt.title('Original (Observed) - Last 2 Years')
-plt.ylabel('Temperature (°C)')
-plt.xlabel('Date')
-plt.grid(True)
-plt.tight_layout()
-plt.savefig('images/original_observed_last2years.png', dpi=300)
-plt.close()
+axes[0].plot(df_mst.index[last_10_years], df_mst['Observed'][last_10_years], color='tab:blue')
+axes[0].set_title('Original (Observed) - Last 10 Years')
+axes[0].set_ylabel('Temperature (°C)')
+axes[0].grid(True)
 
 # 2. After Climate Adjustment
-plt.figure(figsize=(10, 4))
-plt.plot(df_mst.index[last_2_years], df_mst['Climate Adjusted'][last_2_years], color='tab:orange')
-plt.title('After Climate Adjustment - Last 2 Years')
-plt.ylabel('Temperature (°C)')
-plt.xlabel('Date')
-plt.grid(True)
-plt.tight_layout()
-plt.savefig('images/climate_adjusted_last2years.png', dpi=300)
-plt.close()
+axes[1].plot(df_mst.index[last_10_years], df_mst['Climate Adjusted'][last_10_years], color='tab:orange')
+axes[1].set_title('After Climate Adjustment - Last 10 Years')
+axes[1].set_ylabel('Temperature (°C)')
+axes[1].grid(True)
 
 # 3. After Deseasonalisation
-plt.figure(figsize=(10, 4))
-plt.plot(df_mst.index[last_2_years], df_mst['Deseasonalized'][last_2_years], color='tab:green')
-plt.title('After Deseasonalisation - Last 2 Years')
-plt.ylabel('Temperature Anomaly (°C)')
-plt.xlabel('Date')
-plt.grid(True)
-plt.tight_layout()
-plt.savefig('images/deseasonalized_last2years.png', dpi=300)
-plt.close()
+axes[2].plot(df_mst.index[last_10_years], df_mst['Deseasonalized'][last_10_years], color='tab:green')
+axes[2].set_title('After Deseasonalisation - Last 10 Years')
+axes[2].set_ylabel('Temperature Anomaly (°C)')
+axes[2].grid(True)
 
 # 4. After Normalisation
 deseasonalized = df_mst['Deseasonalized']
@@ -115,14 +98,14 @@ offset = round(deseasonalized.mean(), 8)
 scale = round(deseasonalized.std(), 8)
 normalised = (deseasonalized - offset) / scale
 
-plt.figure(figsize=(10, 4))
-plt.plot(df_mst.index[last_2_years], normalised[last_2_years], color='tab:red')
-plt.title('After Normalisation - Last 2 Years')
-plt.ylabel('Normalised Value')
-plt.xlabel('Date')
-plt.grid(True)
+axes[3].plot(df_mst.index[last_10_years], normalised[last_10_years], color='tab:red')
+axes[3].set_title('After Normalisation - Last 10 Years')
+axes[3].set_ylabel('Normalised Value')
+axes[3].set_xlabel('Date')
+axes[3].grid(True)
+
 plt.tight_layout()
-plt.savefig('images/normalised_last2years.png', dpi=300)
+plt.savefig('images/all_stages_last10years.png', dpi=300)
 plt.close()
 # --- End new plotting block ---
 
@@ -130,6 +113,7 @@ df_mst = df_mst.drop(columns=['Climate Adjusted', 'Weekly Mean', 'weekofyear'])
 print(df_mst.head())
 df_mst = df_mst.rename(columns={'Deseasonalized': 'Climate Adjusted'})
 print(df_mst.head())
+'''
 
 # Save the processed data
 df_mst.to_csv('data/processed/observed_time_series.csv')
@@ -156,8 +140,12 @@ X = []
 index = []
 
 while True:
-    # Random phase shift between -12 and +12 hours
-    phase_shift = np.random.randint(-12, 13) # replace with phase_shift = 0
+    if activate_phase_shift:
+        # Random phase shift between -12 and +12 hours
+        phase_shift = np.random.randint(-12, 13)
+    else:
+        phase_shift = 0
+
     start = len(X) * hop_size
     shifted_start = start + phase_shift
     # Ensure shifted_start is within valid range
@@ -167,7 +155,9 @@ while True:
         break
     X.append(values[shifted_start:end])
     index.append(timestamps[shifted_start])
-    if end == total_hours:
+    if not activate_phase_shift and end + hop_size > total_hours:
+        break
+    if activate_phase_shift and end == total_hours:
         break
 
 X = np.array(X)  # Shape: (num_chunks, window_size)
