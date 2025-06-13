@@ -13,8 +13,8 @@ def get_config():
     parser.add_argument('--latent_filter', type=int, default=10, help='Latent filter')
     parser.add_argument('--interim_filters', type=int, default=20, help='Interim filters')
     parser.add_argument('--epochs', type=int, default=100, help='Number of epochs')
-    parser.add_argument('--prior_dist_type', type=str, default='Seasonal', help='Prior Distribution type') # NOTE IMP!
-    parser.add_argument('--activate_phase_shift', type=bool, default=False, help='Randomly shift input phases') # NOTE IMP!
+    parser.add_argument('--prior_dist_type', type=str, default='Normal', help='Prior Distribution type') # NOTE IMP!
+    parser.add_argument('--activate_phase_shift', type=bool, default=True, help='Randomly shift input phases') # NOTE IMP!
     parser.add_argument('--gnrt_start', type=str, default='1970-01-01 00:00:00', help='Timestamp generation starts from')
     parser.add_argument('--gnrt_end', type=str, default='2020-12-31 16:00:00', help='Timestamp generation ends at')
     args, _ = parser.parse_known_args()
